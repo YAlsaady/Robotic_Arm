@@ -80,7 +80,7 @@ void loop() {
   //Serial.println(pos5);
   //delay(200);
   
-  if (x1_val > 800) {
+  if (y1_val > 800) {
     if (pos1 < BAS_MAX) {
       pwm.writeMicroseconds(BASE, pos1);  
       pos1+=steps;
@@ -89,7 +89,7 @@ void loop() {
     }
 
   }
-  if (x1_val < 400) {
+  if (y1_val < 400) {
     if (pos1 > BAS_MIN) {
       pwm.writeMicroseconds(BASE, pos1);  
       pos1-=steps;
@@ -99,7 +99,7 @@ void loop() {
   }
 
   
-  if (x2_val > 800) {
+  if (x1_val > 800) {
     if (pos2 < SHL_MAX) {
       pwm.writeMicroseconds(SHOULDER, pos2);  
       pos2+= steps;
@@ -108,7 +108,7 @@ void loop() {
     }
 
   }
-  if (x2_val < 400) {
+  if (x1_val < 400) {
     if (pos2 > SHL_MIN) {
       pwm.writeMicroseconds(SHOULDER, pos2);  
       pos2-=steps;
@@ -118,7 +118,7 @@ void loop() {
   }
 
 
-  if (y1_val > 800) {
+  if (x2_val > 800) {
     if (pos3 < ELB_MAX) {
       pwm.writeMicroseconds(ELBOW, pos3);  
       pos3+=steps;
@@ -126,7 +126,7 @@ void loop() {
       delay(dt);
     }
   }
-  if (y1_val < 400) {
+  if (x2_val < 400) {
     if (pos3 > ELB_MIN) {
       pwm.writeMicroseconds(ELBOW, pos3);  
       pos3-=steps;
