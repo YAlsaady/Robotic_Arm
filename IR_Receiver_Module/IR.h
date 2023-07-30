@@ -1,7 +1,7 @@
 #ifndef _IR_H
 #define _IR_H
 
-#define RECEIVER 11
+#define RECEIVER 3
 
 #define KEY_POWER (0xFFA25D)
 #define KEY_FUNC_STOP (0xFFE21D)
