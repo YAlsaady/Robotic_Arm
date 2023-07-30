@@ -33,20 +33,35 @@ class Joint {
         byte pinNum;
         unsigned maxVal;
         unsigned minVal;
-        // unsigned start;
+        unsigned pos;
+        unsigned steps;
     public:
         Joint();
-        Joint(byte pinNum, unsigned maxVal, unsigned minVal){
+        Joint(byte pinNum, unsigned maxVal, unsigned minVal, unsigned pos, unsigned startPos){
             this->pinNum = pinNum;
             this->maxVal = maxVal;
             this->minVal = minVal;
+            this->pos = pos;
+            this->steps = startPos;
         }
+
         void moveMs (unsigned time){
             pwm.writeMicroseconds(this->pinNum, time);        
         }
+
         void moveDegree (int angle){
-            angle = map (angle, maxVal, minVal, 0, 180);
-            moveMs(angle);
+            this->pos = map (angle, maxVal, minVal, 0, 180);
+            moveMs(this->pos);
+        }
+
+        void moveSteps (bool direction){
+            if (direction == HIGH && (this->pos < this->maxVal)){
+                moveMs((this->pos + this->steps));
+            }
+            else if (direction == HIGH && (this->pos > this->minVal)){
+                moveMs((this->pos - this->steps));
+            }
+            else {}
         }
 };
 
