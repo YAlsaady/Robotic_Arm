@@ -35,8 +35,8 @@ int pos2 = 1390;
 int pos3 = 1300;
 int pos4 = 1300;
 int pos5 = 1300;
-int dt=25;
-int steps = 50;
+int dt=10;
+int steps = 5;
 
 void setup() {
   Serial.begin(115200);
@@ -102,7 +102,7 @@ void loop() {
   if (x1_val > 800) {
     if (pos2 < SHL_MAX) {
       pwm.writeMicroseconds(SHOULDER, pos2);  
-      pos2+= steps;
+      pos2+= (steps/10);
       //Serial.println(pos2);
       delay(dt);
     }
@@ -111,7 +111,7 @@ void loop() {
   if (x1_val < 400) {
     if (pos2 > SHL_MIN) {
       pwm.writeMicroseconds(SHOULDER, pos2);  
-      pos2-=steps;
+      pos2+= (steps/10);
       //Serial.println(pos2);
       delay(dt);
     }
