@@ -28,6 +28,27 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define GRI_MAX     2150
 #define GRI_MIN     630
 
+class Joint {
+    private:
+        byte pinNum;
+        unsigned maxVal;
+        unsigned minVal;
+        // unsigned start;
+    public:
+        Joint();
+        Joint(byte pinNum, unsigned maxVal, unsigned minVal){
+            this->pinNum = pinNum;
+            this->maxVal = maxVal;
+            this->minVal = minVal;
+        }
+        void moveMs (unsigned time){
+            pwm.writeMicroseconds(this->pinNum, time);        
+        }
+        void moveDegree (int angle){
+            angle = map (angle, maxVal, minVal, 0, 180);
+            moveMs(angle);
+        }
+};
 
 
 int pos1 = 1500;
