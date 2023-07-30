@@ -22,11 +22,11 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define WROT_MAX    2150
 #define WROT_MIN    630
 
-#define WRI_MAX     2150
-#define WRI_min     630
+#define WRI_MAX     2400
+#define WRI_MIN     450
 
 #define GRI_MAX     2150
-#define GRI_min     630
+#define GRI_MIN     630
 
 
 
@@ -36,7 +36,7 @@ int pos3 = 1300;
 int pos4 = 1300;
 int pos5 = 1300;
 int dt=25;
-int steps = 5;
+int steps = 50;
 
 void setup() {
   Serial.begin(115200);
@@ -56,8 +56,8 @@ void setup() {
 
   digitalWrite(7, LOW);
 
-  //digitalWrite(butten1, HIGH);  
-  //digitalWrite(butten2, HIGH);
+  digitalWrite(2, HIGH);  
+  digitalWrite(8, HIGH);
 
   delay(10);
   
@@ -77,7 +77,7 @@ void loop() {
   int y1_val = analogRead(A1);
   int y2_val = analogRead(A3);
 
-  //Serial.println(pos5);
+  //Serial.println(digitalRead(2));
   //delay(200);
   
   if (y1_val > 800) {
@@ -165,7 +165,7 @@ void loop() {
   }
   
   if (digitalRead(8) == HIGH && digitalRead(2)== LOW) {
-    if (pos5 > WRI_MAX) {
+    if (pos5 > WRI_MIN) {
       pwm.writeMicroseconds(WRIST, pos5);  
       pos5-=steps;
       //Serial.println(pos5);
@@ -173,4 +173,3 @@ void loop() {
     }
   }
 }
-
