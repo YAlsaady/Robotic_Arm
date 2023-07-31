@@ -1,53 +1,5 @@
-#include <Wire.h>
-#include <Adafruit_PWMServoDriver.h>
-
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
-
-class Joint {
-private:
-  byte pinNum;
-  unsigned maxVal;
-  unsigned minVal;
-  unsigned pos;
-  unsigned steps;
-public:
-  Joint();
-  Joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos) {
-    this->pinNum = pinNum;
-    this->maxVal = maxVal;
-    this->minVal = minVal;
-    this->pos = pos;
-    this->steps = startPos;
-  }
-
-  void move() {
-    pwm.writeMicroseconds(this->pinNum, this->pos);
-  }
-
-  void moveMs(unsigned time) {
-    this->pos = time;
-    pwm.writeMicroseconds(this->pinNum, this->pos);
-  }
-
-  void moveDegree(int angle) {
-    this->pos = map(angle, maxVal, minVal, 0, 180);
-    moveMs(this->pos);
-  }
-
-  void moveSteps(bool direction) {
-    if (direction == HIGH && (this->pos < this->maxVal)) {
-      this->pos += this->steps;
-    } else if (direction == LOW && (this->pos > this->minVal)) {
-      this->pos -= this->steps;
-    }
-    move();
-  }
-
-  unsigned position() {
-    return pos;
-  }
-};
-
+#include <Arduino.h>
+#include "Joint.hh"
 
 int dt = 10;
 int steps = 5;
@@ -62,6 +14,8 @@ Joint gripper(5, 630, 2150, 1300, steps);
 void setup() {
   Serial.begin(115200);
 
+
+  Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(50);  // Analog servos run at ~50 Hz updates
