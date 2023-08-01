@@ -49,3 +49,4 @@ Robot::moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byt
     this->wristRot->moveSteps(LOW);
   }
 }
+// vim:filetype=arduino

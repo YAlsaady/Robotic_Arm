@@ -25,3 +25,4 @@ public:
 };
 
 #endif  // !ROBOT_H
+// vim:filetype=arduino

@@ -44,3 +44,4 @@ void joint::moveSteps(bool direction) {
 unsigned joint::position() {
   return pos;
 }
+// vim:filetype=arduino
