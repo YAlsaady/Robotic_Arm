@@ -4,12 +4,12 @@
 int dt = 10;
 int steps = 5;
 
-Joint base(0, 450, 2400, 1500, steps);
-Joint shoulder(1, 750, 2000, 1390, (steps / 2));
-Joint elbow(2, 630, 2050, 1300, steps);
-Joint wrist(3, 630, 2150, 1300, (steps / 2));
-Joint wristRot(4, 450, 2400, 1300, steps);
-Joint gripper(5, 630, 2150, 1300, steps);
+joint base(0, 450, 2400, 1500, steps);
+joint shoulder(1, 750, 2000, 1390, (steps / 2));
+joint elbow(2, 630, 2050, 1300, steps);
+joint wrist(3, 630, 2150, 1300, (steps / 2));
+joint wristRot(4, 450, 2400, 1300, steps);
+joint gripper(5, 630, 2150, 1300, steps);
 
 void setup() {
   Serial.begin(115200);

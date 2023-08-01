@@ -3,7 +3,7 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
-class Joint {
+class joint {
 private:
   byte pinNum;
   unsigned maxVal;
@@ -12,8 +12,8 @@ private:
   unsigned steps;
 
 public:
-  Joint();
-  Joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos);
+  joint();
+  joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos);
 
   void move();
 
