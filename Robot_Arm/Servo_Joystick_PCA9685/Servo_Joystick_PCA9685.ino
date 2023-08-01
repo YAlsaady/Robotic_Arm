@@ -2,18 +2,21 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include "Joint.hh"
+#include "Robot.hh"
 
 #define TIME 10
 #define STEPS 5
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-joint base(         0,      450,        2400,       1500,       STEPS       );
-joint shoulder(     1,      750,        2000,       1390,       STEPS / 2   );
-joint elbow(        2,      630,        2050,       1300,       STEPS       );
-joint wrist(        4,      630,        2150,       1300,       STEPS / 2   );
-joint wristRot(     3,      450,        2400,       1300,       STEPS       );
-joint gripper(      5,      630,        2150,       1300,       STEPS       );
+joint base    (     0,      450,        2400,       1500,       STEPS       );
+joint shoulder(     1,      750,        2000,       1360,       STEPS / 2   );
+joint elbow   (     2,      630,        2050,       1340,       STEPS       );
+joint wrist   (     4,      630,        2150,       1500,       STEPS / 2   );
+joint wristRot(     3,      450,        2400,       1350,       STEPS       );
+joint gripper (     5,      630,        2150,       1300,       STEPS       );
+
+Robot myrobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
 
 void setup() {
   Serial.begin(9600);
@@ -49,6 +52,8 @@ void setup() {
 }
 
 void loop() {
+  myrobot.moveWithJoystick(A0, A1, 2, A2, A3, 8);
+  /*
   int x1_val = analogRead(A0);
   int x2_val = analogRead(A2);
   int y1_val = analogRead(A1);
@@ -89,7 +94,9 @@ void loop() {
     wristRot.moveSteps(LOW);
   }
 
-  //Serial.println(analogRead(A0)); delay(200);
-
+  Serial.println(shoulder.position());
   delay(TIME);
+  */
+  delay(TIME);
+  //Serial.println(analogRead(A0)); delay(200);
 }
