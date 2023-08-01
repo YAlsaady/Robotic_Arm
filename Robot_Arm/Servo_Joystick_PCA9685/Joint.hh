@@ -1,7 +1,10 @@
-#ifndef Joint_H
+#ifndef JOINT_H
+#define JOINT_H
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
+
+
 
 class joint {
 private:
@@ -25,4 +28,4 @@ public:
 
   unsigned position();
 };
-#endif  // !Joint_H
+#endif  // !JOINT_H

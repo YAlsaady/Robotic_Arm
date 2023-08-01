@@ -3,8 +3,8 @@
 #include <Adafruit_PWMServoDriver.h>
 #include "Joint.hh"
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
-
+extern Adafruit_PWMServoDriver pwm;
+//joint::joint() {}
 
 joint::joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos) {
   this->pinNum = pinNum;
@@ -24,7 +24,11 @@ void joint::moveMs(unsigned time) {
 }
 
 void joint::moveDegree(int angle) {
-  this->pos = map(angle, maxVal, minVal, 0, 180);
+  if (minVal < 1000) {
+    this->pos = map(angle, maxVal, minVal, 0, 180);
+  } else {
+    this->pos = map(angle, maxVal, minVal, 0, 90);
+  }
   move();
 }
 

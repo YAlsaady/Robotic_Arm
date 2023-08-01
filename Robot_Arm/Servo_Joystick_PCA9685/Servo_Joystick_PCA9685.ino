@@ -1,21 +1,23 @@
 #include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
 #include "Joint.hh"
 
-int dt = 10;
-int steps = 5;
+#define TIME 10
+#define STEPS 5
 
-joint base(0, 450, 2400, 1500, steps);
-joint shoulder(1, 750, 2000, 1390, (steps / 2));
-joint elbow(2, 630, 2050, 1300, steps);
-joint wrist(3, 630, 2150, 1300, (steps / 2));
-joint wristRot(4, 450, 2400, 1300, steps);
-joint gripper(5, 630, 2150, 1300, steps);
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+
+joint base(         0,      450,        2400,       1500,       STEPS       );
+joint shoulder(     1,      750,        2000,       1390,       STEPS / 2   );
+joint elbow(        2,      630,        2050,       1300,       STEPS       );
+joint wrist(        4,      630,        2150,       1300,       STEPS / 2   );
+joint wristRot(     3,      450,        2400,       1300,       STEPS       );
+joint gripper(      5,      630,        2150,       1300,       STEPS       );
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
-
-  Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(50);  // Analog servos run at ~50 Hz updates
@@ -52,16 +54,12 @@ void loop() {
   int y1_val = analogRead(A1);
   int y2_val = analogRead(A3);
 
-  //Serial.println(digitalRead(2));
-  //delay(200);
-
   if (y1_val > 800) {
     base.moveSteps(HIGH);
   }
   if (y1_val < 400) {
     base.moveSteps(LOW);
   }
-
 
   if (x1_val > 800) {
     shoulder.moveSteps(HIGH);
@@ -77,7 +75,6 @@ void loop() {
     elbow.moveSteps(LOW);
   }
 
-
   if (y2_val > 800) {
     wrist.moveSteps(HIGH);
   }
@@ -85,12 +82,14 @@ void loop() {
     wrist.moveSteps(LOW);
   }
 
-
   if (digitalRead(2) == HIGH && digitalRead(8) == LOW) {
     wristRot.moveSteps(HIGH);
   }
   if (digitalRead(2) == LOW && digitalRead(8) == HIGH) {
     wristRot.moveSteps(LOW);
   }
-  delay(dt);
+
+  //Serial.println(analogRead(A0)); delay(200);
+
+  delay(TIME);
 }
