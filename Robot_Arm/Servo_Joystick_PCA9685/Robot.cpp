@@ -10,7 +10,7 @@ Robot::Robot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wr
   this->wristRot = wristRot;
 }
 
-Robot::moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin) {
+void Robot::moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin) {
   if (analogRead(y1Pin) > 800) {
     this->base->moveSteps(HIGH);
   }
@@ -49,4 +49,5 @@ Robot::moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byt
     this->wristRot->moveSteps(LOW);
   }
 }
+// vim:filetype=cpp
 // vim:filetype=arduino

@@ -21,8 +21,9 @@ public:
 
   //moveEndEfffector(xVal, yVal, zVal, RotionDegree);
   //moveJoints();
-  moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin);
+  void moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin);
 };
 
 #endif  // !ROBOT_H
+// vim:filetype=cpp
 // vim:filetype=arduino
