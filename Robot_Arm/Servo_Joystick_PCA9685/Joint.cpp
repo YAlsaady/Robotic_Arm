@@ -1,9 +1,11 @@
+#include "HardwareSerial.h"
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include "Joint.hh"
 
 extern Adafruit_PWMServoDriver pwm;
+extern HardwareSerial Serial;
 //joint::joint() {}
 
 joint::joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos) {
@@ -25,10 +27,15 @@ void joint::moveMs(unsigned time) {
 
 void joint::moveDegree(int angle) {
   if (minVal < 1000) {
-    this->pos = map(angle, maxVal, minVal, 0, 180);
+    this->pos = map(angle, 0, 180, minVal, maxVal);
   } else {
-    this->pos = map(angle, maxVal, minVal, 0, 90);
+    this->pos = map(angle, 0, 90, minVal, maxVal);
   }
+  Serial.print(maxVal);
+  Serial.print("\t");
+  Serial.print(minVal);
+  Serial.print("\t");
+  Serial.println(pos);
   move();
 }
 
@@ -44,4 +51,6 @@ void joint::moveSteps(bool direction) {
 unsigned joint::position() {
   return pos;
 }
+
+// vim:filetype=cpp
 // vim:filetype=arduino

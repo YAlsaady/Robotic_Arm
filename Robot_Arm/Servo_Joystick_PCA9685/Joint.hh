@@ -29,4 +29,6 @@ public:
   unsigned position();
 };
 #endif  // !JOINT_H
+
+// vim:filetype=cpp
 // vim:filetype=arduino

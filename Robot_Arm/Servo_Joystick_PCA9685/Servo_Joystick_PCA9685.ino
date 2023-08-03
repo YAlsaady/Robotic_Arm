@@ -9,11 +9,11 @@
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-joint base    (     0,      450,        2400,       1500,       STEPS       );
+joint base    (     0,      600,        2400,       1550,       STEPS       );
 joint shoulder(     1,      750,        2000,       1360,       STEPS / 2   );
 joint elbow   (     2,      630,        2050,       1340,       STEPS       );
-joint wrist   (     4,      630,        2150,       1500,       STEPS / 2   );
-joint wristRot(     3,      450,        2400,       1350,       STEPS       );
+joint wrist   (     4,      570,        2340,       1455,       STEPS / 2   );
+joint wristRot(     3,      450,        2220,       1350,       STEPS       );
 joint gripper (     5,      630,        2150,       1300,       STEPS       );
 
 Robot myrobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
@@ -41,12 +41,12 @@ void setup() {
 
   delay(10);
 
-  base.move();
-  shoulder.move();
-  elbow.move();
-  wrist.move();
-  wristRot.move();
-  gripper.move();
+  base.moveDegree(90);
+  shoulder.moveDegree(80);
+  elbow.moveDegree(90);
+  wrist.moveDegree(90);
+  wristRot.moveDegree(90);
+  gripper.moveDegree(90);
 
   delay(200);
 }
@@ -54,8 +54,10 @@ void setup() {
 void loop() {
   myrobot.moveWithJoystick(A0, A1, 2, A2, A3, 8);
   delay(TIME);
+
   //Serial.println(analogRead(A0)); delay(200);
 }
 
 
+// vim:filetype=cpp
 // vim:filetype=arduino
