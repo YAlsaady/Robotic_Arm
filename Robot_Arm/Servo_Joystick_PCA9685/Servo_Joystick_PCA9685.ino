@@ -23,7 +23,8 @@ void setup() {
 
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
-  pwm.setPWMFreq(50);  // Analog servos run at ~50 Hz updates
+  pwm.setPWMFreq(50);
+  delay(10);
 
   base.setJoint    (     0,      600,        2400,       1550,       STEPS       );
   shoulder.setJoint(     1,      750,        2000,       1360,       STEPS / 2   );
@@ -33,30 +34,17 @@ void setup() {
   gripper .setJoint(     5,      630,        2150,       1300,       STEPS       );
 
   myrobot.setRobot (&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
+  myrobot.setJoystick(A0, A1, 2, A2, A3, 8);
 
-  pinMode(A0, INPUT);  // Joystick 1 X
-  pinMode(A1, INPUT);  // Joystick 1 Y
-  pinMode(A2, INPUT);  // Joystick 2 X
-  pinMode(A3, INPUT);  // Joystick 2 Y
   pinMode(7, OUTPUT);  // Relay
-
-  pinMode(2, INPUT);
-  pinMode(8, INPUT);
-
   digitalWrite(7, LOW);
 
-  digitalWrite(2, HIGH);
-  digitalWrite(8, HIGH);
-
-  delay(10);
-
-  myrobot.moveJoints(90, 90, 90, 90, 90, 100);
-
+  myrobot.moveJoints(90, 90, 90, 90, 90, 0);
   delay(200);
 }
 
 void loop() {
-  myrobot.moveWithJoystick(A0, A1, 2, A2, A3, 8);
+  myrobot.moveWithJoystick();
   delay(TIME);
 }
 
