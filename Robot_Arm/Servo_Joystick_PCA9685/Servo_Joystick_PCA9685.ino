@@ -50,12 +50,7 @@ void setup() {
 
   delay(10);
 
-  base.moveDegree(90);
-  shoulder.moveDegree(80);
-  elbow.moveDegree(90);
-  wrist.moveDegree(90);
-  wristRot.moveDegree(90);
-  gripper.moveDegree(90);
+  myrobot.moveJoints(90, 90, 90, 90, 90, 100);
 
   delay(200);
 }
@@ -63,8 +58,6 @@ void setup() {
 void loop() {
   myrobot.moveWithJoystick(A0, A1, 2, A2, A3, 8);
   delay(TIME);
-
-  //Serial.println(analogRead(A0)); delay(200);
 }
 
 

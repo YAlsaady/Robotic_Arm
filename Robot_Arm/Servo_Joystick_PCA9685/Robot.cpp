@@ -12,6 +12,17 @@ void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist, j
   this->wristRot = wristRot;
 }
 
+void Robot::moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle, byte wristAngle, byte gripperAngle, byte gripperOpening) {
+    gripperOpening = map(gripperOpening, 0, 100, 0, 180);
+
+    this->base->moveDegree(baseAngle);
+    this->shoulder->moveDegree(shoulderAngle);
+    this->elbow->moveDegree(elbowAngle);
+    this->wrist->moveDegree(wristAngle);
+    this->wristRot->moveDegree(gripperAngle);
+    this->gripper->moveDegree(gripperOpening);
+}
+
 void Robot::moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin) {
   if (analogRead(y1Pin) > 800) {
     this->base->moveSteps(HIGH);

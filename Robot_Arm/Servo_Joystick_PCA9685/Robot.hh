@@ -21,7 +21,7 @@ public:
   void setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper);
 
   //moveEndEfffector(xVal, yVal, zVal, RotionDegree);
-  //moveJoints();
+  void moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle, byte wristAngle, byte gripperAngle, byte gripperOpening);
   void moveWithJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin);
 };
 
