@@ -1,15 +1,16 @@
+#include "Joint.hh"
 #include "HardwareSerial.h"
+#include <Adafruit_PWMServoDriver.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_PWMServoDriver.h>
-#include "Joint.hh"
 
 extern Adafruit_PWMServoDriver pwm;
 extern HardwareSerial Serial;
 
 joint::joint() {}
 
-void joint::setJoint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos) {
+void joint::setJoint(byte pinNum, unsigned minVal, unsigned maxVal,
+                     unsigned pos, unsigned startPos) {
   this->pinNum = pinNum;
   this->maxVal = maxVal;
   this->minVal = minVal;
@@ -17,9 +18,7 @@ void joint::setJoint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos
   this->steps = startPos;
 }
 
-void joint::move() {
-  pwm.writeMicroseconds(this->pinNum, this->pos);
-}
+void joint::move() { pwm.writeMicroseconds(this->pinNum, this->pos); }
 
 void joint::moveMs(unsigned time) {
   this->pos = time;
@@ -49,9 +48,7 @@ void joint::moveSteps(bool direction) {
   pwm.writeMicroseconds(this->pinNum, this->pos);
 }
 
-unsigned joint::position() {
-  return pos;
-}
+unsigned joint::position() { return pos; }
 
 // vim:filetype=cpp
 // vim:filetype=arduino

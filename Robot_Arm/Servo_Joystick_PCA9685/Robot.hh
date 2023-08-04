@@ -27,15 +27,18 @@ private:
 public:
   Robot();
 
-  void setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper);
-  void setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin, byte y2Pin, byte button2Pin);
+  void setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
+                joint *wristRot, joint *gripper);
+  void setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
+                   byte y2Pin, byte button2Pin);
 
-  //moveEndEfffector(xVal, yVal, zVal, RotionDegree);
-  void moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle, byte wristAngle, byte gripperAngle, byte gripperOpening);
+  // moveEndEfffector(xVal, yVal, zVal, RotionDegree);
+  void moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
+                  byte wristAngle, byte gripperAngle, byte gripperOpening);
   void moveWithJoystick();
 };
 
-#endif  // !ROBOT_H
+#endif // !ROBOT_H
 
 // vim:filetype=cpp
 // vim:filetype=arduino
