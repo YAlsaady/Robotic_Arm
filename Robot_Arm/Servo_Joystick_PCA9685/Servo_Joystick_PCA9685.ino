@@ -9,14 +9,14 @@
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-joint base    (     0,      600,        2400,       1550,       STEPS       );
-joint shoulder(     1,      750,        2000,       1360,       STEPS / 2   );
-joint elbow   (     2,      630,        2050,       1340,       STEPS       );
-joint wrist   (     4,      570,        2340,       1455,       STEPS / 2   );
-joint wristRot(     3,      450,        2220,       1350,       STEPS       );
-joint gripper (     5,      630,        2150,       1300,       STEPS       );
+joint base;
+joint shoulder;
+joint elbow;
+joint wrist;
+joint wristRot;
+joint gripper;
 
-Robot myrobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
+Robot myrobot;
 
 void setup() {
   Serial.begin(9600);
@@ -24,6 +24,15 @@ void setup() {
   pwm.begin();
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(50);  // Analog servos run at ~50 Hz updates
+
+  base.setJoint    (     0,      600,        2400,       1550,       STEPS       );
+  shoulder.setJoint(     1,      750,        2000,       1360,       STEPS / 2   );
+  elbow.setJoint   (     2,      630,        2050,       1340,       STEPS       );
+  wrist.setJoint   (     4,      570,        2340,       1455,       STEPS / 2   );
+  wristRot.setJoint(     3,      450,        2220,       1350,       STEPS       );
+  gripper .setJoint(     5,      630,        2150,       1300,       STEPS       );
+
+  myrobot.setRobot (&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
 
   pinMode(A0, INPUT);  // Joystick 1 X
   pinMode(A1, INPUT);  // Joystick 1 Y

@@ -2,7 +2,9 @@
 #include "Robot.hh"
 #include "Joint.hh"
 
-Robot::Robot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper) {
+Robot::Robot() {}
+
+void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper) {
   this->base = base;
   this->shoulder = shoulder;
   this->elbow = elbow;

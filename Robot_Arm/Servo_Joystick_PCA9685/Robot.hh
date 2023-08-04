@@ -16,8 +16,9 @@ private:
   int zPos;
 
 public:
-  //Robot();
-  Robot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper);
+  Robot();
+
+  void setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper);
 
   //moveEndEfffector(xVal, yVal, zVal, RotionDegree);
   //moveJoints();

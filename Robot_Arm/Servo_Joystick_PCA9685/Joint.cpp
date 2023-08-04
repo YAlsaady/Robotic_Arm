@@ -6,9 +6,10 @@
 
 extern Adafruit_PWMServoDriver pwm;
 extern HardwareSerial Serial;
-//joint::joint() {}
 
-joint::joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos) {
+joint::joint() {}
+
+void joint::setJoint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos) {
   this->pinNum = pinNum;
   this->maxVal = maxVal;
   this->minVal = minVal;
@@ -22,7 +23,7 @@ void joint::move() {
 
 void joint::moveMs(unsigned time) {
   this->pos = time;
-  move();
+  pwm.writeMicroseconds(this->pinNum, this->pos);
 }
 
 void joint::moveDegree(int angle) {
@@ -45,7 +46,7 @@ void joint::moveSteps(bool direction) {
   } else if (direction == LOW && (this->pos > this->minVal)) {
     this->pos -= this->steps;
   }
-  move();
+  pwm.writeMicroseconds(this->pinNum, this->pos);
 }
 
 unsigned joint::position() {

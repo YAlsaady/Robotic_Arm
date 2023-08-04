@@ -16,7 +16,8 @@ private:
 
 public:
   joint();
-  joint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos);
+
+  void setJoint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos, unsigned startPos);
 
   void move();
 
