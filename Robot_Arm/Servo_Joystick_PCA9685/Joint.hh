@@ -3,6 +3,7 @@
 #include <Adafruit_PWMServoDriver.h>
 #include <Arduino.h>
 #include <Wire.h>
+#include <stdint.h>
 
 class joint {
 private:
@@ -10,6 +11,7 @@ private:
   unsigned maxVal;
   unsigned minVal;
   unsigned pos;
+  uint8_t angle;
   unsigned steps;
 
 public:
@@ -22,7 +24,7 @@ public:
 
   void moveMs(unsigned time);
 
-  void moveDegree(int angle);
+  uint8_t moveDegree(int angle);
 
   void moveSteps(bool direction);
 
