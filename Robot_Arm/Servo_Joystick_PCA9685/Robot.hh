@@ -14,9 +14,9 @@ private:
   joint *gripper;
 
   int xPos = 0;
-  int yPos = 100;
-  int zPos = 0;
-  int8_t gripperAngle = -90; 
+  int yPos = 350;
+  int zPos = 150;
+  int8_t grippingAngle = -90;
   int8_t rotionDegree = 90;
 
   uint8_t x1Pin;
@@ -46,13 +46,17 @@ public:
 
   /* --- move --- */
   uint8_t moveEndEffector(float xVal, float yVal, float zVal,
-                          int8_t gripperAngle, int8_t rotionDegree);
+                          int8_t grippingAngle);
 
   void moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
                   byte wristAngle, byte gripperAngle, byte gripperOpening);
 
   void moveWithJoystick();
+
   uint8_t moveEndEffector_Joystick();
+
+  /* --- Demos ---*/
+  uint8_t moveEndEffector_Demo();
 };
 
 #endif // !ROBOT_H

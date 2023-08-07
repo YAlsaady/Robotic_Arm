@@ -5,6 +5,11 @@
 #include <errno.h>
 #include <math.h>
 
+#define READHIGH 1000
+#define READLOW 200
+#define STEPS 2
+#define TIME 02
+
 Robot::Robot() {}
 
 void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
@@ -22,7 +27,7 @@ void Robot::setDimension(unsigned baseHight, unsigned shoulderToElbow,
   this->shoulderToElbow = shoulderToElbow;
   this->elbowToWrist = elbowToWrist;
   this->gripperLength = gripperLength;
-  zPos = baseHight + gripperLength;
+  // zPos = baseHight + gripperLength;
 }
 
 void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
@@ -47,103 +52,58 @@ void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
 }
 
 uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
-                               int8_t gripperAngle, int8_t rotionDegree) {
-                                 
-  errno = 0;
-  Serial.print("\t");
+                               int8_t grippingAngle) {
+  static float shoulderToElbow_square = (shoulderToElbow * shoulderToElbow);
+  static float elbowToWrist_square = (elbowToWrist * elbowToWrist);
+
+  float baseAngle, shoulderAngle, elbowAngle, wristAngle;
+  float shoulderToWrist, shoulderToWrist_square;
+
+  baseAngle = degrees(atan2(yVal, xVal));
+
   Serial.print(xVal);
   Serial.print("\t");
   Serial.print(yVal);
   Serial.print("\t");
   Serial.print(zVal);
   Serial.print("\t");
-
-
-
-  static uint32_t shoulderToElbow_square = shoulderToElbow * shoulderToElbow;
-  static uint32_t elbowToWrist_square = elbowToWrist * elbowToWrist;
-
-  float baseAngle, shoulderAngle, elbowAngle, wristAngle;
-  float shoulderToWrist, shoulderToWrist_square;
-
-  baseAngle = atan2(yVal, xVal);
-  baseAngle = degrees(baseAngle);
-
-  zVal = zVal - baseHight + (gripperLength * sin(radians(gripperAngle)));
-  // yVal = yVal * yVal;
-  // yVal += xVal * xVal;
-  // yVal = sqrt(yVal);
-  // yVal -= (gripperLength * cos(radians(gripperAngle)));
+  Serial.print(grippingAngle);
+  Serial.print("\t");
+  zVal = zVal - baseHight - (gripperLength * sin(radians(grippingAngle)));
   yVal = sqrt((xVal * xVal) + (yVal * yVal)) -
-         (gripperLength * cos(radians(gripperAngle)));
-  Serial.print(yVal);
-  Serial.print("\t");
-  Serial.print(zVal);
-  Serial.print("\t");
+         (gripperLength * cos(radians(grippingAngle)));
+
   shoulderToWrist_square = (zVal * zVal) + (yVal * yVal);
   shoulderToWrist = sqrtf(shoulderToWrist_square);
+
   shoulderAngle = atan2(zVal, yVal);
-  shoulderAngle += acos((float(elbowToWrist_square) + shoulderToWrist_square -
-                              float(shoulderToElbow_square)) /
-                        float(2.0 * float(elbowToWrist) * shoulderToWrist));
+  shoulderAngle += (acos((shoulderToElbow_square + (shoulderToWrist_square -
+                         elbowToWrist_square)) /
+                        (2.0 * float(shoulderToElbow) * shoulderToWrist)));
+  if ( shoulderAngle == NAN) {return 2;}
   shoulderAngle = degrees(shoulderAngle);
+  if ( shoulderAngle == NAN) {return 2;}
 
-  elbowAngle = acos((float(elbowToWrist_square) + float(shoulderToElbow_square) -
-                          shoulderToWrist_square) /
+  elbowAngle = acos((float(elbowToWrist_square) +
+                     float(shoulderToElbow_square) - shoulderToWrist_square) /
                     (2.0 * float(elbowToWrist) * float(shoulderToElbow)));
-  // Serial.print((shoulderToWrist));
-  // Serial.print("\t");
-  Serial.print((baseAngle));
-  Serial.print("\t");
-  Serial.print(shoulderAngle);
-  Serial.print("\t");
-
   elbowAngle = degrees(elbowAngle);
-  Serial.print(elbowAngle);
-  Serial.print("\t");
 
-  wristAngle = shoulderAngle + elbowAngle - gripperAngle;
-  wristAngle = 0;
-  // Serial.print(wristAngle);
-  Serial.println("\t");
+  wristAngle = 270 + grippingAngle - (shoulderAngle + elbowAngle) ;
 
-  // Serial.print(baseAngle);
-  // Serial.print("\t");
-  // Serial.print(shoulderAngle);
-  // Serial.print("\t");
-  // Serial.print(elbowAngle);
-  // Serial.print("\t");
-  // Serial.print(wristAngle);
-  // Serial.print("\t");
-  // Serial.print(rotionDegree);
-  // Serial.println();
-  errno = base->moveDegree(baseAngle);
-  if (errno != 0) {
-    // Serial.println(errno);
-    return errno;
-  }
-  errno = shoulder->moveDegree(shoulderAngle);
-  if (errno != 0) {
-    Serial.println(errno);
-    return errno;
-  }
-  errno = elbow->moveDegree(elbowAngle);
-  if (errno != 0) {
-    Serial.println(errno);
-    return errno;
-  }
-  errno = wrist->moveDegree(wristAngle);
-  if (errno != 0) {
-    Serial.println(errno);
-    return errno;
-  }
-  errno = wristRot->moveDegree(rotionDegree);
-  if (errno != 0) {
-    Serial.println(errno);
-    return errno;
-  }
-  //Serial.print("\t");
-  //Serial.print(errno);return 100;
+  elbowAngle = elbowAngle - 90;
+  if (baseAngle < 0 || baseAngle > 180) { return 1;}
+  if (shoulderAngle < 0 || shoulderAngle > 90) { return 2;}
+  if (elbowAngle < -20 || elbowAngle > 180) { return 3;}
+  if (wristAngle < 0 || wristAngle > 180) { return 4;}
+  // if (baseAngle < 0 || baseAngle > 180) { return 1;}
+  // if (baseAngle < 0 || baseAngle > 180) { return 1;}
+  base->moveDegree(baseAngle);
+  shoulder->moveDegree(shoulderAngle);
+  elbow->moveDegree(elbowAngle); 
+  wrist->moveDegree(wristAngle);
+  Serial.println();
+  return 0;
 }
 
 void Robot::moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
@@ -160,31 +120,31 @@ void Robot::moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
 }
 
 void Robot::moveWithJoystick() {
-  if (analogRead(y1Pin) > 800) {
+  if (analogRead(y1Pin) > READHIGH) {
     this->base->moveSteps(HIGH);
   }
-  if (analogRead(y1Pin) < 400) {
+  if (analogRead(y1Pin) < READLOW) {
     this->base->moveSteps(LOW);
   }
 
-  if (analogRead(x1Pin) > 800) {
+  if (analogRead(x1Pin) > READHIGH) {
     this->shoulder->moveSteps(HIGH);
   }
-  if (analogRead(x1Pin) < 400) {
+  if (analogRead(x1Pin) < READLOW) {
     this->shoulder->moveSteps(LOW);
   }
 
-  if (analogRead(x2Pin) > 800) {
+  if (analogRead(x2Pin) > READHIGH) {
     this->elbow->moveSteps(HIGH);
   }
-  if (analogRead(x2Pin) < 400) {
+  if (analogRead(x2Pin) < READLOW) {
     this->elbow->moveSteps(LOW);
   }
 
-  if (analogRead(y2Pin) > 800) {
+  if (analogRead(y2Pin) > READHIGH) {
     this->wrist->moveSteps(HIGH);
   }
-  if (analogRead(y2Pin) < 400) {
+  if (analogRead(y2Pin) < READLOW) {
     this->wrist->moveSteps(LOW);
   }
 
@@ -197,44 +157,93 @@ void Robot::moveWithJoystick() {
 }
 
 uint8_t Robot::moveEndEffector_Joystick() {
-  if (analogRead(x1Pin) > 800) {
-    xPos++;
+  if (analogRead(x1Pin) > READHIGH) {
+    zPos += STEPS;
   }
-  if (analogRead(x1Pin) < 400) {
-    xPos--;
-  }
-
-  if (analogRead(y1Pin) > 800) {
-    yPos++;
-  }
-  if (analogRead(y1Pin) < 400) {
-    yPos--;
+  if (analogRead(x1Pin) < READLOW) {
+    zPos -= STEPS;
   }
 
-  if (analogRead(x2Pin) > 800) {
-    zPos++;
+  if (analogRead(y1Pin) > READHIGH) {
+    grippingAngle += STEPS;
   }
-  if (analogRead(x2Pin) < 400) {
-    zPos--;
+  if (analogRead(y1Pin) < READLOW) {
+    grippingAngle -= STEPS;
   }
 
-  if (analogRead(y2Pin) > 800) {
-    rotionDegree++;
+  if (analogRead(x2Pin) > READHIGH) {
+    yPos -= STEPS;
   }
-  if (analogRead(y2Pin) < 400) {
-    rotionDegree--;
+  if (analogRead(x2Pin) < READLOW) {
+    yPos += STEPS;
+  }
+
+  if (analogRead(y2Pin) > READHIGH) {
+    xPos -= STEPS;
+  }
+  if (analogRead(y2Pin) < READLOW) {
+    xPos += STEPS;
   }
 
   if (digitalRead(button1Pin) == HIGH && digitalRead(button2Pin) == LOW) {
-    gripperAngle++;
+    rotionDegree += STEPS;
   }
   if (digitalRead(button1Pin) == LOW && digitalRead(button2Pin) == HIGH) {
-    gripperAngle--;
+    rotionDegree -= STEPS;
   }
-  (moveEndEffector(xPos, yPos, zPos, gripperAngle, rotionDegree));
+  (moveEndEffector(xPos, yPos, zPos, grippingAngle));
 
   return 0;
 }
 
+uint8_t Robot::moveEndEffector_Demo() {
+  for (uint16_t i = 265; i < 455; i+=1){
+    moveEndEffector(0, i, 100, -85);
+    delay(TIME);
+  }
+  delay(100*TIME);
+  for (uint16_t i = 455; i > 265; i-=1){
+    moveEndEffector(0, i, 100, -85);
+    delay(TIME);
+  }
+  delay(1000*TIME);
+
+  for (uint16_t i = 265; i < 350; i+=1){
+    moveEndEffector(0, i, 100, -85);
+    delay(TIME);
+  }
+  // myrobot.moveEndEffector(0, 350, 100, -85);
+  for (int16_t i = 0; i > -270; i-=1){
+    moveEndEffector(i, 350, 100, -85);
+    delay(TIME);
+  }
+  delay(1000*TIME);
+
+  for (int16_t i = -270; i < 270; i+=1){
+    moveEndEffector(i, 350, 100, -85);
+    delay(TIME);
+  }
+  delay(100*TIME);
+  for (int16_t i = 270; i > 0; i-=1){
+    moveEndEffector(i, 350, 100, -85);
+    delay(TIME);
+  }
+  delay(1000*TIME);
+
+  moveEndEffector(0, 350, 130, -85);
+  delay(100*TIME);
+  moveEndEffector(0, 350, 130, 10);
+  delay(1000*TIME);
+
+  for (uint16_t i = 100; i < 480; i+=1){
+    moveEndEffector(0, 350, i, 10);
+    delay(TIME);
+  }
+  delay(100*TIME);
+  for (uint16_t i = 480; i > 100; i-=1){
+    moveEndEffector(0, 350, i, 10);
+    delay(TIME);
+  }
+}
 // vim:filetype=cpp
 // vim:filetype=arduino
