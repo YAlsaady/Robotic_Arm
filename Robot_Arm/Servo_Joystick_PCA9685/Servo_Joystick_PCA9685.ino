@@ -1,10 +1,10 @@
 #include "Joint.hh"
 #include "Robot.hh"
-
 #include <Adafruit_PWMServoDriver.h>
 #include <Arduino.h>
 #include <Wire.h>
 #include <stdint.h>
+#include <errno.h>
 
 #define TIME 02
 #define STEPS 5
@@ -44,7 +44,6 @@ void setup() {
 
   // myrobot.moveJoints(90, 90, 90, 90, 90, 0);
   // myrobot.moveEndEffector(0, 300, 100, -90);
-
   delay(200);
 }
 
