@@ -48,9 +48,9 @@ void setup() {
 }
 
 void loop() {
-  myrobot.moveEndEffector_Demo();
+  // myrobot.moveEndEffector_Demo();
   // myrobot.moveWithJoystick();
-  // myrobot.moveEndEffector_Joystick();
+  myrobot.moveEndEffector_Joystick();
 }
 
 // vim:filetype=cpp
