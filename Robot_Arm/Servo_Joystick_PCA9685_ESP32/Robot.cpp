@@ -5,8 +5,6 @@
 #include <errno.h>
 #include <math.h>
 
-#define READHIGH 1000*4
-#define READLOW 200*4
 #define STEPS 1
 #define TIME 05
 
@@ -32,13 +30,16 @@ void Robot::setDimension(unsigned baseHight, unsigned shoulderToElbow,
 }
 
 void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
-                        byte y2Pin, byte button2Pin) {
+                        byte y2Pin, byte button2Pin, uint16_t readHigh,
+                        uint16_t readLow) {
   this->x1Pin = x1Pin;
   this->y1Pin = y1Pin;
   this->x2Pin = x2Pin;
   this->y2Pin = y2Pin;
   this->button1Pin = button1Pin;
   this->button2Pin = button2Pin;
+  this->readHigh = readHigh;
+  this->readLow = readLow;
 
   pinMode(x1Pin, INPUT); // Joystick 1 X
   pinMode(y1Pin, INPUT); // Joystick 1 Y
@@ -109,31 +110,31 @@ void Robot::moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
 }
 
 void Robot::moveWithJoystick() {
-  if (analogRead(y1Pin) > READHIGH) {
+  if (analogRead(y1Pin) > readHigh) {
     this->base->moveSteps(HIGH);
   }
-  if (analogRead(y1Pin) < READLOW) {
+  if (analogRead(y1Pin) < readLow) {
     this->base->moveSteps(LOW);
   }
 
-  if (analogRead(x1Pin) > READHIGH) {
+  if (analogRead(x1Pin) > readHigh) {
     this->shoulder->moveSteps(HIGH);
   }
-  if (analogRead(x1Pin) < READLOW) {
+  if (analogRead(x1Pin) < readLow) {
     this->shoulder->moveSteps(LOW);
   }
 
-  if (analogRead(x2Pin) > READHIGH) {
+  if (analogRead(x2Pin) > readHigh) {
     this->elbow->moveSteps(HIGH);
   }
-  if (analogRead(x2Pin) < READLOW) {
+  if (analogRead(x2Pin) < readLow) {
     this->elbow->moveSteps(LOW);
   }
 
-  if (analogRead(y2Pin) > READHIGH) {
+  if (analogRead(y2Pin) > readHigh) {
     this->wrist->moveSteps(HIGH);
   }
-  if (analogRead(y2Pin) < READLOW) {
+  if (analogRead(y2Pin) < readLow) {
     this->wrist->moveSteps(LOW);
   }
 
@@ -147,34 +148,34 @@ void Robot::moveWithJoystick() {
 
 uint8_t Robot::moveEndEffector_Joystick() {
   /* --- Move in Z direction --- */
-  if (analogRead(x1Pin) > READHIGH) {
+  if (analogRead(x1Pin) > readHigh) {
     zPos += STEPS;
   }
-  if (analogRead(x1Pin) < READLOW) {
+  if (analogRead(x1Pin) < readLow) {
     zPos -= STEPS;
   }
 
   /* --- Change the Angle of the Gripper --- */
-  if (analogRead(y1Pin) > READHIGH) {
+  if (analogRead(y1Pin) > readHigh) {
     grippingAngle += STEPS;
   }
-  if (analogRead(y1Pin) < READLOW) {
+  if (analogRead(y1Pin) < readLow) {
     grippingAngle -= STEPS;
   }
 
   /* --- Move in Y direction --- */
-  if (analogRead(x2Pin) > READHIGH) {
+  if (analogRead(x2Pin) > readHigh) {
     yPos -= STEPS;
   }
-  if (analogRead(x2Pin) < READLOW) {
+  if (analogRead(x2Pin) < readLow) {
     yPos += STEPS;
   }
 
   /* --- Move in X direction --- */
-  if (analogRead(y2Pin) > READHIGH) {
+  if (analogRead(y2Pin) > readHigh) {
     xPos -= STEPS;
   }
-  if (analogRead(y2Pin) < READLOW) {
+  if (analogRead(y2Pin) < readLow) {
     xPos += STEPS;
   }
 

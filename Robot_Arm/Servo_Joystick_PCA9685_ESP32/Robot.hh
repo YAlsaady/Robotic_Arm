@@ -25,6 +25,8 @@ private:
   uint8_t x2Pin;
   uint8_t y2Pin;
   uint8_t button2Pin;
+  uint16_t readHigh;
+  uint16_t readLow;
 
   unsigned baseHight;
   unsigned shoulderToElbow;
@@ -42,7 +44,8 @@ public:
                     unsigned elbowToWrist, unsigned gripperLength);
 
   void setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
-                   byte y2Pin, byte button2Pin);
+                   byte y2Pin, byte button2Pin, uint16_t readHigh = 1000,
+                   uint16_t readLow = 200);
 
   /* --- move --- */
   uint8_t moveEndEffector(float xVal, float yVal, float zVal,

@@ -36,7 +36,7 @@ void setup() {
   gripper.setJoint (     5,      630,        2150,       1300,       STEPS       );
 
   myrobot.setRobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
-  myrobot.setJoystick(34, 35, 32, 36, 39, 33);
+  myrobot.setJoystick(34, 35, 32, 36, 39, 33, 4000, 800);
   myrobot.setDimension(139, 226, 226, 60);
 
   pinMode(25, OUTPUT); // Relay
@@ -48,9 +48,9 @@ void setup() {
 }
 
 void loop() {
-  myrobot.moveEndEffector_Demo();
+  // myrobot.moveEndEffector_Demo();
   // myrobot.moveWithJoystick();
-  //myrobot.moveEndEffector_Joystick();
+  myrobot.moveEndEffector_Joystick();
 }
 
 // vim:filetype=cpp
