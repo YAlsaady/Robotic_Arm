@@ -12,6 +12,7 @@
 
 Robot::Robot() {}
 
+/* --- set --- */
 void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
                      joint *wristRot, joint *gripper) {
   this->base = base;
@@ -51,6 +52,7 @@ void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
   digitalWrite(button2Pin, HIGH);
 }
 
+/* --- move --- */
 uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
                                int8_t grippingAngle) {
   static float shoulderToElbow_square = (shoulderToElbow * shoulderToElbow);
@@ -61,14 +63,6 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
 
   baseAngle = degrees(atan2(yVal, xVal));
 
-  Serial.print(xVal);
-  Serial.print("\t");
-  Serial.print(yVal);
-  Serial.print("\t");
-  Serial.print(zVal);
-  Serial.print("\t");
-  Serial.print(grippingAngle);
-  Serial.print("\t");
   zVal = zVal - baseHight - (gripperLength * sin(radians(grippingAngle)));
   yVal = sqrt((xVal * xVal) + (yVal * yVal)) -
          (gripperLength * cos(radians(grippingAngle)));
@@ -92,17 +86,11 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   wristAngle = 270 + grippingAngle - (shoulderAngle + elbowAngle) ;
 
   elbowAngle = elbowAngle - 90;
-  if (baseAngle < 0 || baseAngle > 180) { return 1;}
-  if (shoulderAngle < 0 || shoulderAngle > 90) { return 2;}
-  if (elbowAngle < -20 || elbowAngle > 180) { return 3;}
-  if (wristAngle < 0 || wristAngle > 180) { return 4;}
-  // if (baseAngle < 0 || baseAngle > 180) { return 1;}
-  // if (baseAngle < 0 || baseAngle > 180) { return 1;}
+
   base->moveDegree(baseAngle);
   shoulder->moveDegree(shoulderAngle);
   elbow->moveDegree(elbowAngle); 
   wrist->moveDegree(wristAngle);
-  Serial.println();
   return 0;
 }
 
@@ -157,6 +145,7 @@ void Robot::moveWithJoystick() {
 }
 
 uint8_t Robot::moveEndEffector_Joystick() {
+  /* --- Move in Z direction --- */
   if (analogRead(x1Pin) > READHIGH) {
     zPos += STEPS;
   }
@@ -164,6 +153,7 @@ uint8_t Robot::moveEndEffector_Joystick() {
     zPos -= STEPS;
   }
 
+  /* --- Change the Angle of the Gripper --- */
   if (analogRead(y1Pin) > READHIGH) {
     grippingAngle += STEPS;
   }
@@ -171,6 +161,7 @@ uint8_t Robot::moveEndEffector_Joystick() {
     grippingAngle -= STEPS;
   }
 
+  /* --- Move in Y direction --- */
   if (analogRead(x2Pin) > READHIGH) {
     yPos -= STEPS;
   }
@@ -178,6 +169,7 @@ uint8_t Robot::moveEndEffector_Joystick() {
     yPos += STEPS;
   }
 
+  /* --- Move in X direction --- */
   if (analogRead(y2Pin) > READHIGH) {
     xPos -= STEPS;
   }
@@ -196,7 +188,9 @@ uint8_t Robot::moveEndEffector_Joystick() {
   return 0;
 }
 
+/* --- Demos ---*/
 uint8_t Robot::moveEndEffector_Demo() {
+  /* --- Move in Y direction --- */
   for (uint16_t i = 265; i < 455; i+=1){
     moveEndEffector(0, i, 100, -85);
     delay(TIME);
@@ -212,7 +206,8 @@ uint8_t Robot::moveEndEffector_Demo() {
     moveEndEffector(0, i, 100, -85);
     delay(TIME);
   }
-  // myrobot.moveEndEffector(0, 350, 100, -85);
+
+  /* --- Move in X direction --- */
   for (int16_t i = 0; i > -270; i-=1){
     moveEndEffector(i, 350, 100, -85);
     delay(TIME);
@@ -235,6 +230,7 @@ uint8_t Robot::moveEndEffector_Demo() {
   moveEndEffector(0, 350, 130, 10);
   delay(1000*TIME);
 
+  /* --- Move in Z direction --- */
   for (uint16_t i = 100; i < 480; i+=1){
     moveEndEffector(0, 350, i, 10);
     delay(TIME);

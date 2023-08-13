@@ -26,26 +26,12 @@ void joint::moveMs(unsigned time) {
 }
 
 uint8_t joint::moveDegree(int angle) {
-  // Serial.print(angle);
-
-  // if (angle > 180)
-    // Serial.print("\t");
-    // Serial.println((pinNum + 7));
-  //   return ((pinNum + 1) * 10);
-  // if (angle < 0)
-    // Serial.print("\t");
-    // Serial.println(pinNum++);
-    // return pinNum++;
-
   this->angle = angle;
   if (maxVal > 1800) {
     this->pos = map(angle, 0, 180, minVal, maxVal);
   } else {
     this->pos = map(angle, 0, 90, minVal, maxVal);
   }
-
-  // Serial.print("\t");
-  // Serial.println(pos);
 
   move();
 
