@@ -7,8 +7,8 @@
 
 #define READHIGH 1000*4
 #define READLOW 200*4
-#define STEPS 2
-#define TIME 02
+#define STEPS 1
+#define TIME 05
 
 Robot::Robot() {}
 
@@ -83,9 +83,10 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
                     (2.0 * float(elbowToWrist) * float(shoulderToElbow)));
   elbowAngle = degrees(elbowAngle);
 
-  wristAngle = 270 + grippingAngle - (shoulderAngle + elbowAngle) ;
-
   elbowAngle = elbowAngle - 90;
+
+  wristAngle = 180 + grippingAngle - (shoulderAngle + elbowAngle) ;
+
 
   base->moveDegree(baseAngle);
   shoulder->moveDegree(shoulderAngle);
