@@ -36,11 +36,11 @@ void setup() {
   gripper.setJoint (     5,      630,        2150,       1300,       STEPS       );
 
   myrobot.setRobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
-  myrobot.setJoystick(A0, A1, 2, A2, A3, 8);
+  myrobot.setJoystick(34, 35, 32, 36, 39, 33);
   myrobot.setDimension(139, 226, 226, 60);
 
-  pinMode(7, OUTPUT); // Relay
-  digitalWrite(7, LOW);
+  pinMode(25, OUTPUT); // Relay
+  digitalWrite(25, LOW);
 
   // myrobot.moveJoints(90, 90, 90, 90, 90, 0);
   // myrobot.moveEndEffector(0, 300, 100, -90);
