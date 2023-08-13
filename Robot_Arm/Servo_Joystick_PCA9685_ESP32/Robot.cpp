@@ -5,8 +5,8 @@
 #include <errno.h>
 #include <math.h>
 
-#define READHIGH 1000
-#define READLOW 200
+#define READHIGH 1000*4
+#define READLOW 200*4
 #define STEPS 2
 #define TIME 02
 
@@ -244,6 +244,8 @@ uint8_t Robot::moveEndEffector_Demo() {
     moveEndEffector(0, 350, i, 10);
     delay(TIME);
   }
+
+  return 0;
 }
 // vim:filetype=cpp
 // vim:filetype=arduino
