@@ -2,9 +2,10 @@
 #include "Robot.hh"
 #include <Adafruit_PWMServoDriver.h>
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
 #include <Wire.h>
-#include <stdint.h>
 #include <errno.h>
+#include <stdint.h>
 
 #define TIME 02
 #define STEPS 5
@@ -20,6 +21,9 @@ joint gripper;
 
 Robot myrobot;
 
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+
 void setup() {
   Serial.begin(9600);
 
@@ -27,6 +31,9 @@ void setup() {
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(50);
   delay(10);
+
+  lcd.init();
+  lcd.backlight();
 
   base.setJoint    (     0,      600,        2400,       1550,       STEPS       );
   shoulder.setJoint(     1,      950,        1550,       1550,       STEPS / 5   );
@@ -48,6 +55,15 @@ void setup() {
 }
 
 void loop() {
+  static unsigned long lastUpdateTime = 0;
+  static const unsigned long updateInterval =1000;
+  unsigned long currentTime = millis();
+
+  if (currentTime - lastUpdateTime >= updateInterval) {
+    myrobot.lcdPrint();
+    lastUpdateTime = currentTime;
+  }
+
   // myrobot.moveEndEffector_Demo();
   // myrobot.moveWithJoystick();
   myrobot.moveEndEffector_Joystick();
