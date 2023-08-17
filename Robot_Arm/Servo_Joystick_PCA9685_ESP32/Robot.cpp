@@ -254,13 +254,10 @@ void Robot::lcdPrint() {
   lcd.print("MY Robotic Arm");
   lcd.setCursor(0,2);
   lcd.print("XPos=" + String(xPos));
-  // lcd.print(xPos);
   lcd.setCursor(11,2);
   lcd.print("YPos=" + String(yPos));
-  // lcd.print(yPos);
   lcd.setCursor(0,3);
   lcd.print("ZPos=" + String(zPos));
-  // lcd.print(zPos);
 }
 
 
