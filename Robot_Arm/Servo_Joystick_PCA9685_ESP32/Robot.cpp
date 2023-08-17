@@ -250,17 +250,17 @@ uint8_t Robot::moveEndEffector_Demo() {
 }
 
 void Robot::lcdPrint() {  
-  lcd.setCursor(0,0);
-  lcd.print("Robotic Arm");
-  lcd.setCursor(0,1);
-  lcd.print("X_Position = ");
-  lcd.print(xPos);
+  lcd.setCursor(3,0);
+  lcd.print("MY Robotic Arm");
   lcd.setCursor(0,2);
-  lcd.print("Y_Position = ");
-  lcd.print(yPos);
+  lcd.print("XPos=" + String(xPos));
+  // lcd.print(xPos);
+  lcd.setCursor(11,2);
+  lcd.print("YPos=" + String(yPos));
+  // lcd.print(yPos);
   lcd.setCursor(0,3);
-  lcd.print("Z_position = ");
-  lcd.print(zPos);
+  lcd.print("ZPos=" + String(zPos));
+  // lcd.print(zPos);
 }
 
 
