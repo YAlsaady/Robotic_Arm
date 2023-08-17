@@ -58,6 +58,8 @@ public:
 
   uint8_t moveEndEffector_Joystick();
 
+  void lcdPrint();
+
   /* --- Demos ---*/
   uint8_t moveEndEffector_Demo();
 };
