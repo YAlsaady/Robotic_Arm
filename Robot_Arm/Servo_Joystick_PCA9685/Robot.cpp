@@ -1,17 +1,15 @@
 #include "Robot.hh"
-#include "HardwareSerial.h"
 #include "Joint.hh"
 #include <Arduino.h>
 #include <errno.h>
 #include <math.h>
 
-#define READHIGH 1000
-#define READLOW 200
-#define STEPS 2
-#define TIME 02
+#define STEPS 1
+#define TIME 05
 
 Robot::Robot() {}
 
+/* --- set --- */
 void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
                      joint *wristRot, joint *gripper) {
   this->base = base;
@@ -114,31 +112,31 @@ void Robot::moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
 }
 
 void Robot::moveWithJoystick() {
-  if (analogRead(y1Pin) > READHIGH) {
+  if (analogRead(y1Pin) > readHigh) {
     this->base->moveSteps(HIGH);
   }
-  if (analogRead(y1Pin) < READLOW) {
+  if (analogRead(y1Pin) < readLow) {
     this->base->moveSteps(LOW);
   }
 
-  if (analogRead(x1Pin) > READHIGH) {
+  if (analogRead(x1Pin) > readHigh) {
     this->shoulder->moveSteps(HIGH);
   }
-  if (analogRead(x1Pin) < READLOW) {
+  if (analogRead(x1Pin) < readLow) {
     this->shoulder->moveSteps(LOW);
   }
 
-  if (analogRead(x2Pin) > READHIGH) {
+  if (analogRead(x2Pin) > readHigh) {
     this->elbow->moveSteps(HIGH);
   }
-  if (analogRead(x2Pin) < READLOW) {
+  if (analogRead(x2Pin) < readLow) {
     this->elbow->moveSteps(LOW);
   }
 
-  if (analogRead(y2Pin) > READHIGH) {
+  if (analogRead(y2Pin) > readHigh) {
     this->wrist->moveSteps(HIGH);
   }
-  if (analogRead(y2Pin) < READLOW) {
+  if (analogRead(y2Pin) < readLow) {
     this->wrist->moveSteps(LOW);
   }
 
@@ -151,31 +149,35 @@ void Robot::moveWithJoystick() {
 }
 
 uint8_t Robot::moveEndEffector_Joystick() {
-  if (analogRead(x1Pin) > READHIGH) {
+  /* --- Move in Z direction --- */
+  if (analogRead(x1Pin) > readHigh) {
     zPos += STEPS;
   }
-  if (analogRead(x1Pin) < READLOW) {
+  if (analogRead(x1Pin) < readLow) {
     zPos -= STEPS;
   }
 
-  if (analogRead(y1Pin) > READHIGH) {
+  /* --- Change the Angle of the Gripper --- */
+  if (analogRead(y1Pin) > readHigh) {
     grippingAngle += STEPS;
   }
-  if (analogRead(y1Pin) < READLOW) {
+  if (analogRead(y1Pin) < readLow) {
     grippingAngle -= STEPS;
   }
 
-  if (analogRead(x2Pin) > READHIGH) {
+  /* --- Move in Y direction --- */
+  if (analogRead(x2Pin) > readHigh) {
     yPos -= STEPS;
   }
-  if (analogRead(x2Pin) < READLOW) {
+  if (analogRead(x2Pin) < readLow) {
     yPos += STEPS;
   }
 
-  if (analogRead(y2Pin) > READHIGH) {
+  /* --- Move in X direction --- */
+  if (analogRead(y2Pin) > readHigh) {
     xPos -= STEPS;
   }
-  if (analogRead(y2Pin) < READLOW) {
+  if (analogRead(y2Pin) < readLow) {
     xPos += STEPS;
   }
 
@@ -190,54 +192,60 @@ uint8_t Robot::moveEndEffector_Joystick() {
   return 0;
 }
 
+/* --- Demos ---*/
 uint8_t Robot::moveEndEffector_Demo() {
-  for (uint16_t i = 265; i < 455; i+=1){
+  /* --- Move in Y direction --- */
+  for (uint16_t i = 265; i < 455; i += 1) {
     moveEndEffector(0, i, 100, -85);
     delay(TIME);
   }
-  delay(100*TIME);
-  for (uint16_t i = 455; i > 265; i-=1){
+  delay(100 * TIME);
+  for (uint16_t i = 455; i > 265; i -= 1) {
     moveEndEffector(0, i, 100, -85);
     delay(TIME);
   }
-  delay(1000*TIME);
+  delay(1000 * TIME);
 
-  for (uint16_t i = 265; i < 350; i+=1){
+  for (uint16_t i = 265; i < 350; i += 1) {
     moveEndEffector(0, i, 100, -85);
     delay(TIME);
   }
-  // myrobot.moveEndEffector(0, 350, 100, -85);
-  for (int16_t i = 0; i > -270; i-=1){
-    moveEndEffector(i, 350, 100, -85);
-    delay(TIME);
-  }
-  delay(1000*TIME);
 
-  for (int16_t i = -270; i < 270; i+=1){
+  /* --- Move in X direction --- */
+  for (int16_t i = 0; i > -270; i -= 1) {
     moveEndEffector(i, 350, 100, -85);
     delay(TIME);
   }
-  delay(100*TIME);
-  for (int16_t i = 270; i > 0; i-=1){
+  delay(1000 * TIME);
+
+  for (int16_t i = -270; i < 270; i += 1) {
     moveEndEffector(i, 350, 100, -85);
     delay(TIME);
   }
-  delay(1000*TIME);
+  delay(100 * TIME);
+  for (int16_t i = 270; i > 0; i -= 1) {
+    moveEndEffector(i, 350, 100, -85);
+    delay(TIME);
+  }
+  delay(1000 * TIME);
 
   moveEndEffector(0, 350, 130, -85);
-  delay(100*TIME);
+  delay(100 * TIME);
   moveEndEffector(0, 350, 130, 10);
-  delay(1000*TIME);
+  delay(1000 * TIME);
 
-  for (uint16_t i = 100; i < 480; i+=1){
+  /* --- Move in Z direction --- */
+  for (uint16_t i = 100; i < 480; i += 1) {
     moveEndEffector(0, 350, i, 10);
     delay(TIME);
   }
-  delay(100*TIME);
-  for (uint16_t i = 480; i > 100; i-=1){
+  delay(100 * TIME);
+  for (uint16_t i = 480; i > 100; i -= 1) {
     moveEndEffector(0, 350, i, 10);
     delay(TIME);
   }
+
+  return 0;
 }
 // vim:filetype=cpp
 // vim:filetype=arduino

@@ -44,7 +44,6 @@ public:
                     unsigned elbowToWrist, unsigned gripperLength);
 
   void setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
-                   byte y2Pin, byte button2Pin);
 
   /* --- move --- */
   uint8_t moveEndEffector(float xVal, float yVal, float zVal,
