@@ -1,10 +1,9 @@
 #include "Robot.hh"
-#include "HardwareSerial.h"
 #include "Joint.hh"
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
 #include <errno.h>
 #include <math.h>
-#include <LiquidCrystal_I2C.h>
 
 extern LiquidCrystal_I2C lcd;
 
@@ -75,12 +74,16 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   shoulderToWrist = sqrtf(shoulderToWrist_square);
 
   shoulderAngle = atan2(zVal, yVal);
-  shoulderAngle += (acos((shoulderToElbow_square + (shoulderToWrist_square -
-                         elbowToWrist_square)) /
-                        (2.0 * float(shoulderToElbow) * shoulderToWrist)));
-  if ( shoulderAngle == NAN) {return 2;}
+  shoulderAngle += (acos((shoulderToElbow_square +
+                          (shoulderToWrist_square - elbowToWrist_square)) /
+                         (2.0 * float(shoulderToElbow) * shoulderToWrist)));
+  if (shoulderAngle == NAN) {
+    return 2;
+  }
   shoulderAngle = degrees(shoulderAngle);
-  if ( shoulderAngle == NAN) {return 2;}
+  if (shoulderAngle == NAN) {
+    return 2;
+  }
 
   elbowAngle = acos((float(elbowToWrist_square) +
                      float(shoulderToElbow_square) - shoulderToWrist_square) /
@@ -89,12 +92,11 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
 
   elbowAngle = elbowAngle - 90;
 
-  wristAngle = 180 + grippingAngle - (shoulderAngle + elbowAngle) ;
-
+  wristAngle = 180 + grippingAngle - (shoulderAngle + elbowAngle);
 
   base->moveDegree(baseAngle);
   shoulder->moveDegree(shoulderAngle);
-  elbow->moveDegree(elbowAngle); 
+  elbow->moveDegree(elbowAngle);
   wrist->moveDegree(wristAngle);
   return 0;
 }
@@ -196,52 +198,52 @@ uint8_t Robot::moveEndEffector_Joystick() {
 /* --- Demos ---*/
 uint8_t Robot::moveEndEffector_Demo() {
   /* --- Move in Y direction --- */
-  for (uint16_t i = 265; i < 455; i+=1){
-    moveEndEffector(0, i, 100, -85);
+  for (uint16_t i = 265; i < 455; i += 1) {
+    moveEndEffector(0, i, 120, -85);
     delay(TIME);
   }
-  delay(100*TIME);
-  for (uint16_t i = 455; i > 265; i-=1){
-    moveEndEffector(0, i, 100, -85);
+  delay(100 * TIME);
+  for (uint16_t i = 455; i > 265; i -= 1) {
+    moveEndEffector(0, i, 120, -85);
     delay(TIME);
   }
-  delay(1000*TIME);
+  delay(100 * TIME);
 
-  for (uint16_t i = 265; i < 350; i+=1){
-    moveEndEffector(0, i, 100, -85);
+  for (uint16_t i = 265; i < 350; i += 1) {
+    moveEndEffector(0, i, 120, -85);
     delay(TIME);
   }
 
   /* --- Move in X direction --- */
-  for (int16_t i = 0; i > -270; i-=1){
-    moveEndEffector(i, 350, 100, -85);
+  for (int16_t i = 0; i > -270; i -= 1) {
+    moveEndEffector(i, 350, 120, -85);
     delay(TIME);
   }
-  delay(1000*TIME);
+  delay(100 * TIME);
 
-  for (int16_t i = -270; i < 270; i+=1){
-    moveEndEffector(i, 350, 100, -85);
+  for (int16_t i = -270; i < 270; i += 1) {
+    moveEndEffector(i, 350, 120, -85);
     delay(TIME);
   }
-  delay(100*TIME);
-  for (int16_t i = 270; i > 0; i-=1){
-    moveEndEffector(i, 350, 100, -85);
+  delay(100 * TIME);
+  for (int16_t i = 270; i > 0; i -= 1) {
+    moveEndEffector(i, 350, 120, -85);
     delay(TIME);
   }
-  delay(1000*TIME);
+  delay(100 * TIME);
 
   moveEndEffector(0, 350, 130, -85);
-  delay(100*TIME);
+  delay(100 * TIME);
   moveEndEffector(0, 350, 130, 10);
-  delay(1000*TIME);
+  delay(100 * TIME);
 
   /* --- Move in Z direction --- */
-  for (uint16_t i = 100; i < 480; i+=1){
+  for (uint16_t i = 100; i < 480; i += 1) {
     moveEndEffector(0, 350, i, 10);
     delay(TIME);
   }
-  delay(100*TIME);
-  for (uint16_t i = 480; i > 100; i-=1){
+  delay(100 * TIME);
+  for (uint16_t i = 480; i > 100; i -= 1) {
     moveEndEffector(0, 350, i, 10);
     delay(TIME);
   }
@@ -249,17 +251,14 @@ uint8_t Robot::moveEndEffector_Demo() {
   return 0;
 }
 
-void Robot::lcdPrint() {  
-  lcd.setCursor(3,0);
-  lcd.print("MY Robotic Arm");
-  lcd.setCursor(0,2);
-  lcd.print("XPos=" + String(xPos));
-  lcd.setCursor(11,2);
-  lcd.print("YPos=" + String(yPos));
-  lcd.setCursor(0,3);
-  lcd.print("ZPos=" + String(zPos));
+void Robot::lcdPrint() {
+  lcd.setCursor(0, 2);
+  lcd.print("XPos=" + String(xPos) + "  ");
+  lcd.setCursor(11, 2);
+  lcd.print("YPos=" + String(yPos) + "  ");
+  lcd.setCursor(0, 3);
+  lcd.print("ZPos=" + String(zPos) + "  ");
 }
-
 
 // vim:filetype=cpp
 // vim:filetype=arduino
