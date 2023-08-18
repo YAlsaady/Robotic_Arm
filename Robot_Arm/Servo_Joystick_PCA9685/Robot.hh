@@ -25,6 +25,8 @@ private:
   uint8_t x2Pin;
   uint8_t y2Pin;
   uint8_t button2Pin;
+  uint16_t readHigh;
+  uint16_t readLow;
 
   unsigned baseHight;
   unsigned shoulderToElbow;

@@ -31,13 +31,16 @@ void Robot::setDimension(unsigned baseHight, unsigned shoulderToElbow,
 }
 
 void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
-                        byte y2Pin, byte button2Pin) {
+                        byte y2Pin, byte button2Pin, uint16_t readHigh,
+                        uint16_t readLow) {
   this->x1Pin = x1Pin;
   this->y1Pin = y1Pin;
   this->x2Pin = x2Pin;
   this->y2Pin = y2Pin;
   this->button1Pin = button1Pin;
   this->button2Pin = button2Pin;
+  this->readHigh = readHigh;
+  this->readLow = readLow;
 
   pinMode(x1Pin, INPUT); // Joystick 1 X
   pinMode(y1Pin, INPUT); // Joystick 1 Y
@@ -51,6 +54,7 @@ void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
   digitalWrite(button2Pin, HIGH);
 }
 
+/* --- move --- */
 uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
                                int8_t grippingAngle) {
   static float shoulderToElbow_square = (shoulderToElbow * shoulderToElbow);
@@ -61,14 +65,6 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
 
   baseAngle = degrees(atan2(yVal, xVal));
 
-  Serial.print(xVal);
-  Serial.print("\t");
-  Serial.print(yVal);
-  Serial.print("\t");
-  Serial.print(zVal);
-  Serial.print("\t");
-  Serial.print(grippingAngle);
-  Serial.print("\t");
   zVal = zVal - baseHight - (gripperLength * sin(radians(grippingAngle)));
   yVal = sqrt((xVal * xVal) + (yVal * yVal)) -
          (gripperLength * cos(radians(grippingAngle)));
@@ -77,32 +73,30 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   shoulderToWrist = sqrtf(shoulderToWrist_square);
 
   shoulderAngle = atan2(zVal, yVal);
-  shoulderAngle += (acos((shoulderToElbow_square + (shoulderToWrist_square -
-                         elbowToWrist_square)) /
-                        (2.0 * float(shoulderToElbow) * shoulderToWrist)));
-  if ( shoulderAngle == NAN) {return 2;}
+  shoulderAngle += (acos((shoulderToElbow_square +
+                          (shoulderToWrist_square - elbowToWrist_square)) /
+                         (2.0 * float(shoulderToElbow) * shoulderToWrist)));
+  if (shoulderAngle == NAN) {
+    return 2;
+  }
   shoulderAngle = degrees(shoulderAngle);
-  if ( shoulderAngle == NAN) {return 2;}
+  if (shoulderAngle == NAN) {
+    return 2;
+  }
 
   elbowAngle = acos((float(elbowToWrist_square) +
                      float(shoulderToElbow_square) - shoulderToWrist_square) /
                     (2.0 * float(elbowToWrist) * float(shoulderToElbow)));
   elbowAngle = degrees(elbowAngle);
 
-  wristAngle = 270 + grippingAngle - (shoulderAngle + elbowAngle) ;
-
   elbowAngle = elbowAngle - 90;
-  if (baseAngle < 0 || baseAngle > 180) { return 1;}
-  if (shoulderAngle < 0 || shoulderAngle > 90) { return 2;}
-  if (elbowAngle < -20 || elbowAngle > 180) { return 3;}
-  if (wristAngle < 0 || wristAngle > 180) { return 4;}
-  // if (baseAngle < 0 || baseAngle > 180) { return 1;}
-  // if (baseAngle < 0 || baseAngle > 180) { return 1;}
+
+  wristAngle = 180 + grippingAngle - (shoulderAngle + elbowAngle);
+
   base->moveDegree(baseAngle);
   shoulder->moveDegree(shoulderAngle);
-  elbow->moveDegree(elbowAngle); 
+  elbow->moveDegree(elbowAngle);
   wrist->moveDegree(wristAngle);
-  Serial.println();
   return 0;
 }
 
