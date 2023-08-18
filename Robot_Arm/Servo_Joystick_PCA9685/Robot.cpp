@@ -1,8 +1,11 @@
 #include "Robot.hh"
 #include "Joint.hh"
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
 #include <errno.h>
 #include <math.h>
+
+extern LiquidCrystal_I2C lcd;
 
 #define STEPS 1
 #define TIME 05
@@ -247,5 +250,15 @@ uint8_t Robot::moveEndEffector_Demo() {
 
   return 0;
 }
+
+void Robot::lcdPrint() {
+  lcd.setCursor(0, 2);
+  lcd.print("XPos=" + String(xPos));
+  lcd.setCursor(11, 2);
+  lcd.print("YPos=" + String(yPos));
+  lcd.setCursor(0, 3);
+  lcd.print("ZPos=" + String(zPos));
+}
+
 // vim:filetype=cpp
 // vim:filetype=arduino

@@ -44,6 +44,8 @@ public:
                     unsigned elbowToWrist, unsigned gripperLength);
 
   void setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
+                   byte y2Pin, byte button2Pin, uint16_t readHigh = 1000,
+                   uint16_t readLow = 200);
 
   /* --- move --- */
   uint8_t moveEndEffector(float xVal, float yVal, float zVal,
@@ -55,6 +57,8 @@ public:
   void moveWithJoystick();
 
   uint8_t moveEndEffector_Joystick();
+
+  void lcdPrint();
 
   /* --- Demos ---*/
   uint8_t moveEndEffector_Demo();
