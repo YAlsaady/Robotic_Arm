@@ -1,5 +1,4 @@
 #include "Joint.hh"
-#include "HardwareSerial.h"
 #include <Adafruit_PWMServoDriver.h>
 #include <Arduino.h>
 #include <Wire.h>

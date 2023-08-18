@@ -1,13 +1,10 @@
 #ifndef JOINT_H
 #define JOINT_H
-#include <Adafruit_PWMServoDriver.h>
-#include <Arduino.h>
-#include <Wire.h>
 #include <stdint.h>
 
 class joint {
 private:
-  byte pinNum;
+  uint8_t pinNum;
   unsigned maxVal;
   unsigned minVal;
   unsigned pos;
@@ -17,7 +14,7 @@ private:
 public:
   joint();
 
-  void setJoint(byte pinNum, unsigned minVal, unsigned maxVal, unsigned pos,
+  void setJoint(uint8_t pinNum, unsigned minVal, unsigned maxVal, unsigned pos,
                 unsigned startPos);
 
   void move();
