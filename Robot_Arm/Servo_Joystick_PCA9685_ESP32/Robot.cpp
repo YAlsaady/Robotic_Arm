@@ -98,6 +98,7 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   shoulder->moveDegree(shoulderAngle);
   elbow->moveDegree(elbowAngle);
   wrist->moveDegree(wristAngle);
+  wristRot->moveDegree(baseAngle);
   return 0;
 }
 
@@ -162,10 +163,12 @@ uint8_t Robot::moveEndEffector_Joystick() {
 
   /* --- Change the Angle of the Gripper --- */
   if (analogRead(y1Pin) > readHigh) {
-    grippingAngle += STEPS;
+    gripper->moveSteps(HIGH);
+    // grippingAngle += STEPS;
   }
   if (analogRead(y1Pin) < readLow) {
-    grippingAngle -= STEPS;
+    gripper->moveSteps(LOW);
+    // grippingAngle -= STEPS;
   }
 
   /* --- Move in Y direction --- */
@@ -185,13 +188,14 @@ uint8_t Robot::moveEndEffector_Joystick() {
   }
 
   if (digitalRead(button1Pin) == HIGH && digitalRead(button2Pin) == LOW) {
-    rotionDegree += STEPS;
+    gripper->moveSteps(HIGH);
+    // gripperOpening += STEPS;
   }
   if (digitalRead(button1Pin) == LOW && digitalRead(button2Pin) == HIGH) {
-    rotionDegree -= STEPS;
+    gripper->moveSteps(LOW);
+    // rotionDegree -= STEPS;
   }
-  wristRot->moveDegree(rotionDegree);
-  moveEndEffector(xPos, yPos, zPos, grippingAngle);
+  moveEndEffector(xPos, yPos, zPos);
 
   return 0;
 }

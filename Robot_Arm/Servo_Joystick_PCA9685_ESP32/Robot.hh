@@ -15,8 +15,9 @@ private:
 
   int xPos = 0;
   int yPos = 350;
-  int zPos = 150;
-  int8_t grippingAngle = -90;
+  int zPos = 250;
+  int8_t gripperOpening = 100;
+  int8_t grippingAngle = -85;
   int8_t rotionDegree = 90;
 
   uint8_t x1Pin;
@@ -49,7 +50,7 @@ public:
 
   /* --- move --- */
   uint8_t moveEndEffector(float xVal, float yVal, float zVal,
-                          int8_t grippingAngle);
+                          int8_t grippingAngle = -90);
 
   void moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
                   byte wristAngle, byte gripperAngle, byte gripperOpening);

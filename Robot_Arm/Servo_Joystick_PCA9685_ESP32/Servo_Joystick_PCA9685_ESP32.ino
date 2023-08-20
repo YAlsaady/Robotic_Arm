@@ -54,12 +54,12 @@ void setup() {
   shoulder.setJoint(     1,      950,        1550,       1550,       STEPS / 5   );
   elbow.setJoint   (     2,      780,        1940,       1360,       STEPS / 2   );
   wrist.setJoint   (     4,      570,        2340,       1455,       STEPS       );
-  wristRot.setJoint(     3,      450,        2220,       1350,       STEPS       );
-  gripper.setJoint (     5,      630,        2150,       1300,       STEPS       );
+  wristRot.setJoint(     3,      490,        2220,       1400,       STEPS       );
+  gripper.setJoint (     5,      600,         940,        940,       STEPS       );
 
   myrobot.setRobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
   myrobot.setJoystick(35, 34, 32, 39, 36, 33, 4000, 800);
-  myrobot.setDimension(139, 226, 226, 60);
+  myrobot.setDimension(139, 226, 226, 184);
 
   pinMode(25, OUTPUT); // Relay
   digitalWrite(25, LOW);
