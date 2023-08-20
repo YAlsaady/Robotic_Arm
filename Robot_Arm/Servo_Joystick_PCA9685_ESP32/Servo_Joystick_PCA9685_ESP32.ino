@@ -88,13 +88,13 @@ void loop() {
   }
   switch (val) {
   case 0:
-    option = "Joystick:Endeffector";
+    option = "Joystick: Gripper";
     break;
   case 1:
-    option = "Joystick:Joints     ";
+    option = "Joystick: Joints ";
     break;
   case 2:
-    option = "Demo                ";
+    option = "Demo             ";
     break;
   default:
     break;
@@ -128,6 +128,7 @@ void loop() {
   }
 
   if (millis() - lastUpdateTime >= 500) {
+    option = " > " + option;
     lcd.setCursor(0, 1);
     lcd.print(option);
     myrobot.lcdPrint();

@@ -25,6 +25,9 @@ void joint::moveMs(unsigned time) {
 }
 
 uint8_t joint::moveDegree(int angle) {
+  if (angle < 0) return 0;
+  if (maxVal > 1800 && angle > 180)  return 0;
+  if (maxVal < 1800 && angle > 90)  return 0;
   this->angle = angle;
   if (maxVal > 1800) {
     this->pos = map(angle, 0, 180, minVal, maxVal);

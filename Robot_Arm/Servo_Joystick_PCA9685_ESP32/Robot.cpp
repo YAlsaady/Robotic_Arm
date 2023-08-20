@@ -48,8 +48,8 @@ void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
   pinMode(x2Pin, INPUT); // Joystick 2 X
   pinMode(y2Pin, INPUT); // Joystick 2 Y
 
-  pinMode(button1Pin, INPUT);
-  pinMode(button2Pin, INPUT);
+  pinMode(button1Pin, INPUT_PULLUP);
+  pinMode(button2Pin, INPUT_PULLUP);
 
   digitalWrite(button1Pin, HIGH);
   digitalWrite(button2Pin, HIGH);
@@ -190,7 +190,8 @@ uint8_t Robot::moveEndEffector_Joystick() {
   if (digitalRead(button1Pin) == LOW && digitalRead(button2Pin) == HIGH) {
     rotionDegree -= STEPS;
   }
-  (moveEndEffector(xPos, yPos, zPos, grippingAngle));
+  wristRot->moveDegree(rotionDegree);
+  moveEndEffector(xPos, yPos, zPos, grippingAngle);
 
   return 0;
 }
