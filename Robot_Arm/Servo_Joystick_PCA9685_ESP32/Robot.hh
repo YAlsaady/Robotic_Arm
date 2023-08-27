@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+extern HardwareSerial Serial;
+
 class Robot {
 private:
   joint *base;
@@ -14,10 +16,10 @@ private:
   joint *gripper;
 
   int xPos = 0;
-  int yPos = 350;
-  int zPos = 250;
+  int yPos = 300;
+  int zPos = 200;
   int8_t gripperOpening = 100;
-  int8_t grippingAngle = -85;
+  int8_t grippingAngle = 0;
   int8_t rotionDegree = 90;
 
   uint8_t x1Pin;

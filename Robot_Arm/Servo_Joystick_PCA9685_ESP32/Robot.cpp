@@ -1,5 +1,7 @@
+#include "HardwareSerial.h"
 #include "Robot.hh"
 #include "Joint.hh"
+#include "WString.h"
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 #include <errno.h>
@@ -20,6 +22,7 @@ void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
   this->elbow = elbow;
   this->wrist = wrist;
   this->wristRot = wristRot;
+  this->gripper = gripper;
 }
 
 void Robot::setDimension(unsigned baseHight, unsigned shoulderToElbow,
@@ -65,7 +68,7 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   float shoulderToWrist, shoulderToWrist_square;
 
   baseAngle = degrees(atan2(yVal, xVal));
-
+  Serial.print(baseAngle);
   zVal = zVal - baseHight - (gripperLength * sin(radians(grippingAngle)));
   yVal = sqrt((xVal * xVal) + (yVal * yVal)) -
          (gripperLength * cos(radians(grippingAngle)));
@@ -94,6 +97,14 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
 
   wristAngle = 180 + grippingAngle - (shoulderAngle + elbowAngle);
 
+  String text ="Base: " + String(baseAngle) + "   " + "Shoulder: " + String(shoulderAngle) + "   " 
+                  +"Elbow: " + String(elbowAngle) + "   " + "Wrist: " + String(wristAngle);  Serial.println(text);
+  // Serial.printf("%f%f%f%f",baseAngle, shoulderAngle, elbowAngle, wristAngle);
+  if (baseAngle < 0 || baseAngle > 180) return 1;
+  if (shoulderAngle < 0 || shoulderAngle > 180) return 1;
+  if (elbowAngle < 0 || elbowAngle > 180) return 1;
+  if (wristAngle < 0 || wristAngle > 180) return 1;
+
   base->moveDegree(baseAngle);
   shoulder->moveDegree(shoulderAngle);
   elbow->moveDegree(elbowAngle);
@@ -105,7 +116,7 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
 void Robot::moveJoints(byte baseAngle, byte shoulderAngle, byte elbowAngle,
                        byte wristAngle, byte gripperAngle,
                        byte gripperOpening) {
-  gripperOpening = map(gripperOpening, 0, 100, 0, 180);
+  //gripperOpening = map(gripperOpening, 0, 100, 0, 180);
 
   this->base->moveDegree(baseAngle);
   this->shoulder->moveDegree(shoulderAngle);
@@ -188,11 +199,11 @@ uint8_t Robot::moveEndEffector_Joystick() {
   }
 
   if (digitalRead(button1Pin) == HIGH && digitalRead(button2Pin) == LOW) {
-    gripper->moveSteps(HIGH);
+    // gripper->moveSteps(HIGH);
     // gripperOpening += STEPS;
   }
   if (digitalRead(button1Pin) == LOW && digitalRead(button2Pin) == HIGH) {
-    gripper->moveSteps(LOW);
+    // gripper->moveSteps(LOW);
     // rotionDegree -= STEPS;
   }
   moveEndEffector(xPos, yPos, zPos);
