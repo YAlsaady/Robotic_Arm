@@ -55,6 +55,7 @@ void setup() {
 void loop() {
   //myrobot.moveJoints(90, 90, 0, 0, 90, 0);
   myrobot.moveEndEffector_Joystick();
+  //myrobot.moveEndEffector(0, 300, 200);
 }
 
 // vim:filetype=cpp

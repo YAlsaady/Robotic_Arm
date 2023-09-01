@@ -67,8 +67,15 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   float baseAngle, shoulderAngle, elbowAngle, wristAngle;
   float shoulderToWrist, shoulderToWrist_square;
 
+  Serial.print(xVal);
+  Serial.print("   ");
+  Serial.print(yVal);
+  Serial.print("   ");
+  Serial.print(zVal);
+  Serial.print("   ");
   baseAngle = degrees(atan2(yVal, xVal));
   Serial.print(baseAngle);
+  Serial.print("   ");
   zVal = zVal - baseHight - (gripperLength * sin(radians(grippingAngle)));
   yVal = sqrt((xVal * xVal) + (yVal * yVal)) -
          (gripperLength * cos(radians(grippingAngle)));
@@ -79,7 +86,7 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   shoulderAngle = atan2(zVal, yVal);
   shoulderAngle += (acos((shoulderToElbow_square +
                           (shoulderToWrist_square - elbowToWrist_square)) /
-                         (2.0 * float(shoulderToElbow) * shoulderToWrist)));
+                         (2.0 * float(shoulderToElbow) * shoulderToWrist)));          
   if (shoulderAngle == NAN) {
     return 2;
   }
@@ -87,15 +94,19 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   if (shoulderAngle == NAN) {
     return 2;
   }
-
+  Serial.print(shoulderAngle);  
+  Serial.print("   ");   
   elbowAngle = acos((float(elbowToWrist_square) +
                      float(shoulderToElbow_square) - shoulderToWrist_square) /
                     (2.0 * float(elbowToWrist) * float(shoulderToElbow)));
   elbowAngle = degrees(elbowAngle);
-
   elbowAngle = elbowAngle - 90;
+  Serial.print(elbowAngle);
+  Serial.print("   ");
 
   wristAngle = 180 + grippingAngle - (shoulderAngle + elbowAngle);
+  Serial.print(wristAngle);
+  Serial.print("   ");
 
   String text ="Base: " + String(baseAngle) + "   " + "Shoulder: " + String(shoulderAngle) + "   " 
                   +"Elbow: " + String(elbowAngle) + "   " + "Wrist: " + String(wristAngle);  Serial.println(text);
@@ -103,7 +114,8 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   if (baseAngle < 0 || baseAngle > 180) return 1;
   if (shoulderAngle < 0 || shoulderAngle > 180) return 1;
   if (elbowAngle < 0 || elbowAngle > 180) return 1;
-  if (wristAngle < 0 || wristAngle > 180) return 1;
+  //if (wristAngle < 0 || wristAngle > 180) return 1;
+  if (wristAngle < 0 || wristAngle > 180) wristAngle = 0;
 
   base->moveDegree(baseAngle);
   shoulder->moveDegree(shoulderAngle);
