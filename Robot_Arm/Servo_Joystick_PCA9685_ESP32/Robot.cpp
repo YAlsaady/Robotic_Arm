@@ -1,4 +1,5 @@
 #include "Robot.hh"
+#include "HardwareSerial.h"
 #include "Joint.hh"
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
@@ -6,20 +7,22 @@
 #include <math.h>
 
 extern LiquidCrystal_I2C lcd;
+extern HardwareSerial Serial;
 
 #define STEPS 1
 #define TIME 05
+#define TIME2 100
 
 Robot::Robot() {}
 
 /* --- set --- */
-void Robot::setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
-                     joint *wristRot, joint *gripper) {
+void Robot::setRobot(joint *base, double_joint *shoulder, joint *elbow, joint *wrist, joint *wristRot, joint *gripper) {
   this->base = base;
   this->shoulder = shoulder;
   this->elbow = elbow;
   this->wrist = wrist;
   this->wristRot = wristRot;
+  this->gripper = gripper;
 }
 
 void Robot::setDimension(unsigned baseHight, unsigned shoulderToElbow,
@@ -43,10 +46,10 @@ void Robot::setJoystick(byte x1Pin, byte y1Pin, byte button1Pin, byte x2Pin,
   this->readHigh = readHigh;
   this->readLow = readLow;
 
-  pinMode(x1Pin, INPUT); // Joystick 1 X
-  pinMode(y1Pin, INPUT); // Joystick 1 Y
-  pinMode(x2Pin, INPUT); // Joystick 2 X
-  pinMode(y2Pin, INPUT); // Joystick 2 Y
+  pinMode(x1Pin, INPUT);  // Joystick 1 X
+  pinMode(y1Pin, INPUT);  // Joystick 1 Y
+  pinMode(x2Pin, INPUT);  // Joystick 2 X
+  pinMode(y2Pin, INPUT);  // Joystick 2 Y
 
   pinMode(button1Pin, INPUT_PULLUP);
   pinMode(button2Pin, INPUT_PULLUP);
@@ -67,16 +70,13 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
   baseAngle = degrees(atan2(yVal, xVal));
 
   zVal = zVal - baseHight - (gripperLength * sin(radians(grippingAngle)));
-  yVal = sqrt((xVal * xVal) + (yVal * yVal)) -
-         (gripperLength * cos(radians(grippingAngle)));
+  yVal = sqrt((xVal * xVal) + (yVal * yVal)) - (gripperLength * cos(radians(grippingAngle)));
 
   shoulderToWrist_square = (zVal * zVal) + (yVal * yVal);
   shoulderToWrist = sqrtf(shoulderToWrist_square);
 
   shoulderAngle = atan2(zVal, yVal);
-  shoulderAngle += (acos((shoulderToElbow_square +
-                          (shoulderToWrist_square - elbowToWrist_square)) /
-                         (2.0 * float(shoulderToElbow) * shoulderToWrist)));
+  shoulderAngle += (acos((shoulderToElbow_square + (shoulderToWrist_square - elbowToWrist_square)) / (2.0 * float(shoulderToElbow) * shoulderToWrist)));
   if (shoulderAngle == NAN) {
     return 2;
   }
@@ -85,9 +85,7 @@ uint8_t Robot::moveEndEffector(float xVal, float yVal, float zVal,
     return 2;
   }
 
-  elbowAngle = acos((float(elbowToWrist_square) +
-                     float(shoulderToElbow_square) - shoulderToWrist_square) /
-                    (2.0 * float(elbowToWrist) * float(shoulderToElbow)));
+  elbowAngle = acos((float(elbowToWrist_square) + float(shoulderToElbow_square) - shoulderToWrist_square) / (2.0 * float(elbowToWrist) * float(shoulderToElbow)));
   elbowAngle = degrees(elbowAngle);
 
   elbowAngle = elbowAngle - 90;
@@ -196,6 +194,7 @@ uint8_t Robot::moveEndEffector_Joystick() {
     // rotionDegree -= STEPS;
   }
   moveEndEffector(xPos, yPos, zPos);
+  delay(TIME2);
 
   return 0;
 }

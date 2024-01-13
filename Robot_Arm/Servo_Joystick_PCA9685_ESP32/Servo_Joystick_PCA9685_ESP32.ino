@@ -1,41 +1,36 @@
+// #include "/home/yaman/.arduino15/packages/esp32/hardware/esp32/2.0.12/cores/esp32/Arduino.h",
+#include <Arduino.h>
 #include "Joint.hh"
 #include "Robot.hh"
+#include "esp32-hal.h"
+#include "menu.hh"
 #include "WString.h"
 #include <Adafruit_PWMServoDriver.h>
-#include <Arduino.h>
 #include <ESP32Encoder.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <errno.h>
 #include <stdint.h>
+#include "config.h"
 
 #define TIME 02
-#define STEPS 5
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 joint base;
-joint shoulder;
+joint shoulder1;
+joint shoulder2;
 joint elbow;
 joint wrist;
 joint wristRot;
 joint gripper;
 
+double_joint shoulder;
+
 Robot myrobot;
 
-LiquidCrystal_I2C lcd(0x27, 20, 4);
-ESP32Encoder encoder;
-
-bool isSelected = false;
-
-void IRAM_ATTR isr() {
-  static unsigned long lastUpdateTime = 0;
-  if (millis() - lastUpdateTime < 200) {
-    return;
-  }
-  isSelected = true;
-  lastUpdateTime = millis();
-}
+//LiquidCrystal_I2C lcd(0x27, 20, 4);
+//ESP32Encoder encoder;
 
 void setup() {
   Serial.begin(9600);
@@ -45,95 +40,67 @@ void setup() {
   pwm.setPWMFreq(50);
   delay(10);
 
-  lcd.init();
-  lcd.backlight();
-  lcd.setCursor(0, 0);
-  lcd.print("Robotic Arm Menu:");
+  //lcd.init();
+  //lcd.backlight();
+  //lcd.setCursor(0, 0);
+  //lcd.print("Robotic Arm Menu:");
 
-  base.setJoint    (     0,      600,        2400,       1550,       STEPS       );
-  shoulder.setJoint(     1,      950,        1550,       1550,       STEPS / 5   );
-  elbow.setJoint   (     2,      780,        1940,       1360,       STEPS / 2   );
-  wrist.setJoint   (     4,      570,        2340,       1455,       STEPS       );
-  wristRot.setJoint(     3,      490,        2220,       1400,       STEPS       );
-  gripper.setJoint (     5,      600,         940,        940,       STEPS       );
+  //encoder.attachHalfQuad(27, 26);
+  //encoder.setCount(0);
+  //start();
+
+  base.setJoint       (BASE);
+  elbow.setJoint      (ELBOW);
+  wrist.setJoint      (WRIST);
+  wristRot.setJoint   (WRISTROT);
+  gripper.setJoint    (GRIPPER);
+
+  shoulder.setJoint(SHOULDER);
+  // shoulder2.setJoint(     6,      930,        1530,       1530,       STEPS / 5   );
 
   myrobot.setRobot(&base, &shoulder, &elbow, &wrist, &wristRot, &gripper);
-  myrobot.setJoystick(35, 34, 32, 39, 36, 33, 4000, 800);
-  myrobot.setDimension(139, 226, 226, 184);
+  myrobot.setJoystick(JOYSTICK_PAR);
+  myrobot.setDimension(DIMENSION);
 
   pinMode(25, OUTPUT); // Relay
   digitalWrite(25, LOW);
 
-  encoder.attachHalfQuad(27, 26);
-  encoder.setCount(0);
-  attachInterrupt(digitalPinToInterrupt(14), isr, RISING);
-
-  // myrobot.moveJoints(90, 90, 90, 90, 90, 0);
+  myrobot.moveJoints(90,90, 90, 90, 90, 0);
   // myrobot.moveEndEffector(0, 300, 100, -90);
   delay(200);
+  // base.moveDegree(0);
+  // delay(200);
+  // base.moveDegree(180);
 }
 
 void loop() {
-  static int val = 0;
-  static unsigned long lastUpdateTime = 0;
-  static String option;
-  static int selected = 0;
-  val = encoder.getCount() / 2;
-
-  if (val > 2) {
-    encoder.setCount(0);
+  // shoulder.moveMs(1550);
+  // shoulder.moveDegree(110);
+  // shoulder.moveMs(shoulder.getMin());
+  // delay(3000);
+  // shoulder.moveMs(shoulder.getMax());
+  // delay(3000);
+  // myrobot.moveEndEffector_Joystick();
+  myrobot.moveWithJoystick();
+  //test();
+  // int val = 180;
+  // shoulder.moveDegree(val);
+  // shoulder2.moveDegree(180 - val);
+  /*
+  int i;
+  for (i = 0; i <= 180; i++) {
+    shoulder.moveDegree(i);
+    shoulder2.moveDegree(180 - i);
+    delay(20);
   }
-  if (val < 0) {
-    encoder.setCount(4);
-  }
-  switch (val) {
-  case 0:
-    option = "Joystick: Gripper";
-    break;
-  case 1:
-    option = "Joystick: Joints ";
-    break;
-  case 2:
-    option = "Demo             ";
-    break;
-  default:
-    break;
-  }
-  if (isSelected) {
-    selected = val;
-    isSelected = false;
-  }
-  switch (selected) {
-  case 0:
-    myrobot.moveEndEffector_Joystick();
-    break;
-
-  case 1:
-    myrobot.moveWithJoystick();
-    break;
-
-  case 2:
-    lcd.clear();
-    lcd.setCursor(5, 2);
-    lcd.print("DEMO X Y Z");
-    myrobot.moveEndEffector_Demo();
-    selected = 0;
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Robotic Arm Menu:");
-    break;
-
-  default:
-    break;
-  }
-
-  if (millis() - lastUpdateTime >= 500) {
-    option = " > " + option;
-    lcd.setCursor(0, 1);
-    lcd.print(option);
-    myrobot.lcdPrint();
-    lastUpdateTime = millis();
-  }
+  */
+  // delay(1000);
+  // for (i = 180; i >= 0; i--) {
+  //   shoulder.moveDegree(i);
+  //   shoulder2.moveDegree(180 - i);
+  //   delay(20);
+  // }
+  // delay(1000);
 }
 
 // vim:filetype=cpp

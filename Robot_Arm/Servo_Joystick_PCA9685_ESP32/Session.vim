@@ -3,7 +3,7 @@ let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~/Git/Arduino
+cd ~/src/Arduino
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -14,10 +14,10 @@ else
   set shortmess=aoO
 endif
 badd +1 Robot_Arm/Servo_Joystick_PCA9685_ESP32/Servo_Joystick_PCA9685_ESP32.ino
-badd +1 ~/Git/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Joint.hh
-badd +1 ~/Git/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Joint.cpp
-badd +1 ~/Git/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Robot.hh
-badd +1 ~/Git/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Robot.cpp
+badd +1 ~/src/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Joint.hh
+badd +1 ~/src/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Joint.cpp
+badd +1 ~/src/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Robot.hh
+badd +1 ~/src/Arduino/Robot_Arm/Servo_Joystick_PCA9685_ESP32/Robot.cpp
 argglobal
 %argdel
 $argadd Robot_Arm/Servo_Joystick_PCA9685_ESP32/Servo_Joystick_PCA9685_ESP32.ino

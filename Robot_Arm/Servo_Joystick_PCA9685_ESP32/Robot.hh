@@ -1,13 +1,13 @@
 #ifndef ROBOT_H
 #define ROBOT_H
+// #include <Arduino.h>
 #include "Joint.hh"
-#include <Arduino.h>
 #include <stdint.h>
 
 class Robot {
-private:
+protected:
   joint *base;
-  joint *shoulder;
+  double_joint *shoulder;
   joint *elbow;
   joint *wrist;
   joint *wristRot;
@@ -38,7 +38,7 @@ public:
   Robot();
 
   /* --- set --- */
-  void setRobot(joint *base, joint *shoulder, joint *elbow, joint *wrist,
+  void setRobot(joint *base, double_joint *shoulder, joint *elbow, joint *wrist,
                 joint *wristRot, joint *gripper);
 
   void setDimension(unsigned baseHight, unsigned shoulderToElbow,
